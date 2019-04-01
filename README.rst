@@ -16,6 +16,10 @@ Mixcloud API wrapper for Python and Async IO
     :target: https://pypi.org/project/aiomixcloud/
     :alt: PyPI - Python Version
 
+.. image:: https://travis-ci.org/amikrop/aiomixcloud.svg?branch=master
+    :target: https://travis-ci.org/amikrop/aiomixcloud/
+    :alt: Build Status
+
 .. image:: https://readthedocs.org/projects/aiomixcloud/badge/?version=latest
     :target: https://aiomixcloud.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
