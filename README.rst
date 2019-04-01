@@ -4,6 +4,22 @@ aiomixcloud
 Mixcloud API wrapper for Python and Async IO
 --------------------------------------------
 
+.. image:: https://img.shields.io/pypi/v/aiomixcloud.svg
+    :target: https://pypi.org/project/aiomixcloud/
+    :alt: PyPI
+
+.. image:: https://img.shields.io/pypi/l/aiomixcloud.svg
+    :target: https://pypi.org/project/aiomixcloud/
+    :alt: PyPI - License
+
+.. image:: https://img.shields.io/pypi/pyversions/aiomixcloud.svg
+    :target: https://pypi.org/project/aiomixcloud/
+    :alt: PyPI - Python Version
+
+.. image:: https://readthedocs.org/projects/aiomixcloud/badge/?version=latest
+    :target: https://aiomixcloud.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
+
 *aiomixcloud* is a wrapper library for the `HTTP API
 <https://www.mixcloud.com/developers/>`_ of `Mixcloud
 <https://www.mixcloud.com/>`_.  It supports asynchronous operation via
