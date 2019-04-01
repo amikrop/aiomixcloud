@@ -89,9 +89,9 @@ class Mixcloud:
         self._oembed_root = oembed_root
         #: JSON decode function
         self._json_decode = json_decoder_class().decode
-        #:
+        #: Class for resource model
         self._resource_class = resource_class
-        #:
+        #: Class for resource model list
         self._resource_list_class = resource_list_class
         #: Whether to raise an exception when API responds
         #: with error message
