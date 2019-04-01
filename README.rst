@@ -42,8 +42,9 @@ You can start using *aiomixcloud* as simply as:
     async with Mixcloud() as mixcloud:
         some_resource = await mixcloud.get(some_key)
 
-For more details see the `usage page <https://aiomixcloud.readthedocs.io>`_
-of the `documentation <https://aiomixcloud.readthedocs.io>`_.
+For more details see the `usage page
+<https://aiomixcloud.readthedocs.io/en/latest/usage.html>`_
+of the `documentation <https://aiomixcloud.readthedocs.io/en/latest/>`_.
 
 License
 -------
