@@ -9,7 +9,7 @@ with init_path.open() as f:
     version = re.search(r'__version__ = \'(.*?)\'', f.read()).group(1)
 
 with open('README.rst') as f:
-    long_description = '\n\n' + f.read()
+    long_description = f.read()
 
 
 setup(
