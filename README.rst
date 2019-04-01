@@ -19,8 +19,8 @@ Installation
 
 The following Python versions are supported:
 
-    - CPython: 3.6, 3.7, 3.8
-    - PyPy: 3.5
+- CPython: 3.6, 3.7, 3.8
+- PyPy: 3.5
 
 Install via `pip
 <https://packaging.python.org/tutorials/installing-packages/>`_:
@@ -32,7 +32,9 @@ Install via `pip
 Usage
 -----
 
-You can start using *aiomixcloud* as simply as::
+You can start using *aiomixcloud* as simply as:
+
+.. code-block:: python
 
     from aiomixcloud import Mixcloud
 
