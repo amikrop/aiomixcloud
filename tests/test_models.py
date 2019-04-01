@@ -7,19 +7,19 @@ from aiomixcloud.models import AccessDict, AccessList, Resource, _WrapMixin
 
 
 class Wrap(_WrapMixin):
-    """"""
+    """`_WrapMixin` trivial implementation."""
 
     def __init__(self, mixcloud):
-        """"""
+        """Store Mixcloud instance."""
         self.mixcloud = mixcloud
 
 
 class WrapDict(_WrapMixin, UserDict):
-    """"""
+    """Wrapping dictionary."""
 
 
 class WrapList(_WrapMixin, UserList):
-    """"""
+    """Wrapping list."""
 
 
 def async_classmethod(method):
@@ -38,12 +38,13 @@ class TestWrapMixin(unittest.TestCase):
 
     @async_classmethod
     async def setUpClass(cls):
-        """Store Mixcloud instance."""
+        """Store expected types and Mixcloud instance."""
+        cls.expected = [int, str, AccessList, AccessDict, Resource]
         cls.mixcloud = Mixcloud()
 
     @async_classmethod
     async def tearDownClass(cls):
-        """Store Mixcloud instance."""
+        """Close Mixcloud instance."""
         await cls.mixcloud.close()
 
     def test_wrap(self):
@@ -51,15 +52,32 @@ class TestWrapMixin(unittest.TestCase):
         for each input.
         """
         wrap = Wrap(self.mixcloud)
-
         data = [
-            (9, int),
-            ('test', str),
-            ([1, 3, 2], AccessList),
-            ({'foo': 'bar', 'one': 'two'}, AccessDict),
-            ({'name': 'Aristotelis', 'type': 'user'}, Resource),
+            9,
+            'test',
+            [1, 3, 2],
+            {'foo': 'bar', 'one': 'two'},
+            {'name': 'Aristotelis', 'type': 'user'},
         ]
 
-        for value, expected_type in data:
+        for i, value in enumerate(data):
             wrapped = wrap._wrap(value)
+            expected_type = self.expected[i]
+            self.assertIsInstance(wrapped, expected_type)
+
+    def test_iteration(self):
+        """_WrapMixin must return correct data types when being
+        iterated over.
+        """
+        data = [
+            -3,
+            'foo',
+            [8, 0, 4, -2],
+            {'test': 12, 'baz': 15},
+            {'key': 'somekey', 'type': 'comment'},
+        ]
+        wrap_list = WrapList(data, mixcloud=self.mixcloud)
+
+        for i, wrapped in enumerate(wrap_list):
+            expected_type = self.expected[i]
             self.assertIsInstance(wrapped, expected_type)
