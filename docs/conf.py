@@ -6,7 +6,12 @@
 # full list see the documentation:
 # http://www.sphinx-doc.org/en/master/config
 
-import aiomixcloud
+import re
+from pathlib import Path
+
+init_path = Path('../aiomixcloud') / '__init__.py'
+with init_path.open() as f:
+    package_version = re.search(r'__version__ = \'(.*?)\'', f.read()).group(1)
 
 # -- Project information -----------------------------------------------------
 
@@ -15,9 +20,9 @@ copyright = '2019, Aristotelis Mikropoulos'
 author = 'Aristotelis Mikropoulos'
 
 # The short X.Y version
-version = aiomixcloud.__version__
+version = package_version
 # The full version, including alpha/beta/rc tags
-release = aiomixcloud.__version__
+release = package_version
 
 
 # -- General configuration ---------------------------------------------------
