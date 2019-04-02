@@ -65,13 +65,13 @@ class _WrapMixin:
 
     def _wrap(self, item):
         """Wrap `item` with proper class.  `dict` becomes
-        :class:`AccessDict`, or :class:`Resource` if it has ``"type"``
-        as a key.  `list` becomes :class:`AccessList`.  The rest
-        remain unchanged.
+        :class:`AccessDict`, or :class:`Resource`-like if it has
+        ``"type"`` as a key.  `list` becomes :class:`AccessList`.
+        The rest remain unchanged.
         """
         if isinstance(item, dict):
             if 'type' in item:
-                # Item is considered an entity, make it a Resource.
+                # Item is considered an entity, make it a resource.
                 return self.mixcloud._resource_class(
                     item, mixcloud=self.mixcloud)
             return AccessDict(item, mixcloud=self.mixcloud)
@@ -98,20 +98,22 @@ class AccessDict(_WrapMixin, UserDict):
 
 
 class AccessList(_WrapMixin, UserList):
-    """List-like model which supports accessing :class:`Resource` items
-    by matching their "key" item.  Items are wrapped with a proper model,
-    depending on their type.  Original `list` is stored in `self.data`.
+    """List-like model which supports accessing :class:`Resource`-like
+    items by matching their "key" item.  Items are wrapped with a
+    proper model, depending on their type.  Original `list` is stored
+    in `self.data`.
     """
 
     def __getitem__(self, key):
         """Try returning item by given `key`.  On failure, try to
-        find and return a :class:`Resource` item whose their "key"
-        item equals `key`.  Raise :exc:`KeyError` on failure of finding one.
+        find and return a :class:`Resource`-like item whose their "key"
+        item equals `key`.  Raise :exc:`KeyError` on failure of finding
+        one.
         """
         try:
             return super().__getitem__(key)
         except TypeError:
-            # `key` is probably a string, try to find a Resource
+            # `key` is probably a string, try to find a resource
             # whose key matches it.
 
             # Surround `key` by slashes in case it is not already
