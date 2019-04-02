@@ -246,3 +246,11 @@ class TestResource(MixcloudTestCase):
         for t in targeting:
             method = getattr(self.resource, t)
             self.assertTrue(callable(method))
+
+    def test_targeting_failure(self):
+        """`Resource` must raise `AttributeError` when accessed with
+        a missing attribute which is not included in the "targeting"
+        ones.
+        """
+        with self.assertRaises(AttributeError):
+            self.resource.not_there
