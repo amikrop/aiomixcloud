@@ -5,7 +5,7 @@ Basic usage
 -----------
 
 The library's main interface is the :class:`~aiomixcloud.core.Mixcloud` class.
-Import it directly from :mod:`aiomixcloud` and use it as an asynchronous
+Import it directly from ``aiomixcloud`` and use it as an asynchronous
 context manager.  Pass a key (URL part corresponding to a unique API resource)
 to its :meth:`~aiomixcloud.core.Mixcloud.get` method to fetch information
 about that :class:`resource <aiomixcloud.models.Resource>`::
@@ -31,6 +31,20 @@ about a tag::
 
     tag = await mixcloud.discover('jazz')
     tag['name']  # 'Jazz shows'
+
+:class:`~aiomixcloud.models.Resource` objects are dict-like and can iterated
+over::
+
+    # Using `tag` from previous snippet
+    for key, value in tag.items():
+        print(key, value)
+
+Original ``dict`` is stored in their `data` attribute::
+
+    tag.data  # {'url': 'https://www.mixcloud.com/discover/jazz/', 'type': ...
+
+Listing
+-------
 
 The listing methods consist of:
 
@@ -78,6 +92,18 @@ a `page` argument can be specified (zero-indexed), giving 20 results per page
     some_jazz = await mixcloud.search('jazz', page=2)
     metal_music = await mixcloud.search('metal', page=4, per_page=30)
 
+:class:`Resource lists <aiomixcloud.models.ResourceList>` have a
+:meth:`~aiomixcloud.models.ResourceList.previous` and a
+:meth:`~aiomixcloud.models.ResourceList.next` method which return the previous
+and the next page of the current resource list, respecitvely.  If there is no
+such page available, these methods return ``None``::
+
+    older_metal = await metal_music.previous()
+    older_metal  # <ResourceList>
+    newer_metal = await metal_music.next()
+    newer_metal  # <ResourceList>
+    await newer_metal.next()  # This returns None
+
 When responding with a :class:`resource list
 <aiomixcloud.models.ResourceList>`, the API sends most of the information
 for each resource, but not all of it.  That is an example of dealing with
@@ -99,6 +125,9 @@ information of a non-full resource::
 object so it can be used in chained calls, something that can find elegant
 application in `synchronous library usage <sync_>`_.
 
+Connections
+-----------
+
 API resources can have sub-resources, or, *connections*, that is other API
 resources associated with (or, "owned" by) them.  For example, a user can have
 followers, i.e a user resource has `followers` as a connection, which are
@@ -115,8 +144,11 @@ available through methods of it, named after the respective connection names::
         comment  # <Resource: Comment '/comments/cr/.../'>
         comment.comment  # 'Nice set, keep up the good work!'
 
-Embed information and HTML code for a cloudcast can be retrieved through the
-:meth:`~aiomixcloud.core.Mixcloud.embed_json` and
+Embedding
+---------
+
+Embedding information and HTML code for a cloudcast can be retrieved through
+the :meth:`~aiomixcloud.core.Mixcloud.embed_json` and
 :meth:`~aiomixcloud.core.Mixcloud.embed_html` methods, being able to take
 `width`, `height` and `color` as arguments::
 
@@ -173,6 +205,9 @@ access token owner `(current user)`::
     current_user = await mixcloud.me()
     current_user.username  # 'amikrop'
 
+Actions
+-------
+
 Authorized usage also enables *actions*, a group of methods about doing
 and undoing certain actions on specific resources:
 
@@ -190,6 +225,9 @@ the first row target a user, the rest of them target a cloudcast)::
     data['result']['message']  # 'Now following bob'
     data = await mixcloud.unrepost('alice/fun-times-ep-25')
     data.result.success  # True
+
+Uploading
+---------
 
 Making authorized use of the API allows uploading cloudcasts and
 editing existing uploads.  Both :meth:`~aiomixcloud.core.Mixcloud.upload` and
@@ -224,6 +262,9 @@ a `name` optional argument::
                                description='The best house mix, right for summer',
                                tags=['house', 'deep', 'summer'])
     data['result'].success  # True
+
+Targeting
+---------
 
 Methods of :class:`~aiomixcloud.core.Mixcloud` that target a specific resource
 (and thus, take a key as first argument) are also available as methods of
