@@ -32,8 +32,8 @@ about a tag::
     tag = await mixcloud.discover('jazz')
     tag['name']  # 'Jazz shows'
 
-:class:`~aiomixcloud.models.Resource` objects are dict-like and can iterated
-over::
+:class:`~aiomixcloud.models.Resource` objects are dict-like and can be
+iterated over::
 
     # Using `tag` from previous snippet
     for key, value in tag.items():
