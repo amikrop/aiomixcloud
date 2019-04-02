@@ -312,7 +312,6 @@ class Mixcloud:
         # Handle non-JSON response
         return await response.text()
 
-    @targeting
     @displayed
     async def _embed(self, cloudcast, params):
         """Get embed data for `cloudcast`, in desirable format
@@ -324,12 +323,14 @@ class Mixcloud:
         async with self._session.get(url, params=params) as response:
             return await self._proper_result(response)
 
+    @targeting
     async def embed_json(self, *args, **kwargs):
         """Get embed data for given cloudcast, in JSON format
         using specified display options.
         """
         return await self._embed(*args, format='json', **kwargs)
 
+    @targeting
     async def embed_html(self, *args, **kwargs):
         """Get embed data for given cloudcast, in HTML format
         using specified display options.

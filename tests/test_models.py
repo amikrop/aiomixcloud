@@ -212,3 +212,37 @@ class TestAccessList(MixcloudTestCase):
         """
         with self.assertRaises(KeyError):
             self.access_list['missing']
+
+
+class TestResource(MixcloudTestCase):
+    """Test `Resource`."""
+
+    @classmethod
+    def setUpClass(cls):
+        """Store test data."""
+        super().setUpClass()
+        cls.resource = Resource(
+            {'username': 'bob',
+             'city': 'London', 'key': '/bob/',
+             'metadata': {
+                'connections': {
+                    'followers': 'https://api.mixcloud.com/bob/followers/'}},
+             'type': 'user'}, mixcloud=cls.mixcloud)
+
+    def test_repr(self):
+        """`Resource` must have a proper representation."""
+        value = repr(self.resource)
+        self.assertEqual(value, "<Resource: User '/bob/'>")
+
+    def test_targeting(self):
+        """The "targeting" methods must be available as
+        `Resource` methods.
+        """
+        actions = ['follow', 'favorite', 'repost', 'listen_later']
+        undo_actions = [f'un{action}' for action in actions]
+        targeting = (actions + undo_actions
+                     + ['embed_json', 'embed_html', 'oembed', 'edit'])
+
+        for t in targeting:
+            method = getattr(self.resource, t)
+            self.assertTrue(callable(method))
