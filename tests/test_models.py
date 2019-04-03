@@ -1,10 +1,13 @@
 import asyncio
+import json
 import unittest
 from collections import UserDict, UserList
+from pathlib import Path
 from unittest.mock import Mock, patch
 
 from aiomixcloud import Mixcloud
-from aiomixcloud.models import AccessDict, AccessList, Resource, _WrapMixin
+from aiomixcloud.models import AccessDict, AccessList, \
+                               Resource, ResourceList, _WrapMixin
 
 
 def synced(method):
@@ -274,11 +277,17 @@ class TestResource(MixcloudTestCase):
         for connection in self.connections:
             method = getattr(self.resource, connection)
 
+            filename = Path('tests') / 'fixtures' / f'{connection}.json'
+            with filename.open() as f:
+                fixture = json.load(f)
+            expected_resource_list = ResourceList(
+                fixture, mixcloud=self.mixcloud)
+
             async def mock_get():
                 """Return a `ResourceList` appropriate
                 for `connection`.
                 """
-                return 'todo'
+                return expected_resource_list
 
             mock_mixcloud.get = Mock()
             mock_mixcloud.get.return_value = mock_get()
@@ -287,4 +296,8 @@ class TestResource(MixcloudTestCase):
             resource_list = await method()
             mock_mixcloud.get.assert_called_once_with(
                 f'https://api.mixcloud.com/bob/{connection}/', relative=False)
-            self.assertEqual(resource_list, 'todo')
+            self.assertIsInstance(resource_list, ResourceList)
+            for resource in resource_list:
+                self.assertIsInstance(resource, Resource)
+                # TODO: compare `resource` type to expected type?
+            self.assertEqual(resource_list.data, expected_resource_list.data)

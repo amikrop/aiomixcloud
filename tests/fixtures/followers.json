@@ -1,0 +1,60 @@
+{
+    "paging": {
+        "previous": "https://api.mixcloud.com/jimmy/followers/?limit=20&metadata=1&since=2019-03-21+12%3A43%3A47", 
+        "next": "https://api.mixcloud.com/jimmy/followers/?limit=20&metadata=1&until=2018-06-12+16%3A23%3A45"
+    }, 
+    "data": [
+        {
+            "username": "foobar", 
+            "name": "Foo Bar", 
+            "url": "https://www.mixcloud.com/foobar/", 
+            "pictures": {
+                "medium": "https://thumbnailer.mixcloud.com/unsafe/100x100/profile/3/1/5/d/f63c-2e5f-4b82-bbe5-702c5cfffa02", 
+                "320wx320h": "https://thumbnailer.mixcloud.com/unsafe/320x320/profile/3/1/5/d/f63c-2e5f-4b82-bbe5-702c5cfffa02", 
+                "extra_large": "https://thumbnailer.mixcloud.com/unsafe/600x600/profile/3/1/5/d/f63c-2e5f-4b82-bbe5-702c5cfffa02", 
+                "large": "https://thumbnailer.mixcloud.com/unsafe/300x300/profile/3/1/5/d/f63c-2e5f-4b82-bbe5-702c5cfffa02", 
+                "640wx640h": "https://thumbnailer.mixcloud.com/unsafe/640x640/profile/3/1/5/d/f63c-2e5f-4b82-bbe5-702c5cfffa02", 
+                "medium_mobile": "https://thumbnailer.mixcloud.com/unsafe/80x80/profile/3/1/5/d/f63c-2e5f-4b82-bbe5-702c5cfffa02", 
+                "small": "https://thumbnailer.mixcloud.com/unsafe/25x25/profile/3/1/5/d/f63c-2e5f-4b82-bbe5-702c5cfffa02", 
+                "thumbnail": "https://thumbnailer.mixcloud.com/unsafe/50x50/profile/3/1/5/d/f63c-2e5f-4b82-bbe5-702c5cfffa02"
+            }, 
+            "key": "/foobar/", 
+            "type": "user"
+        }, 
+        {
+            "username": "johnnyofficial", 
+            "name": "Johnny Official", 
+            "url": "https://www.mixcloud.com/johnnyofficial/", 
+            "pictures": {
+                "medium": "https://thumbnailer.mixcloud.com/unsafe/100x100/profile/4/b/4/2/63ad-2ad7-43af-b498-4595317b365e", 
+                "320wx320h": "https://thumbnailer.mixcloud.com/unsafe/320x320/profile/4/b/4/2/63ad-2ad7-43af-b498-4595317b365e", 
+                "extra_large": "https://thumbnailer.mixcloud.com/unsafe/600x600/profile/4/b/4/2/63ad-2ad7-43af-b498-4595317b365e", 
+                "large": "https://thumbnailer.mixcloud.com/unsafe/300x300/profile/4/b/4/2/63ad-2ad7-43af-b498-4595317b365e", 
+                "640wx640h": "https://thumbnailer.mixcloud.com/unsafe/640x640/profile/4/b/4/2/63ad-2ad7-43af-b498-4595317b365e", 
+                "medium_mobile": "https://thumbnailer.mixcloud.com/unsafe/80x80/profile/4/b/4/2/63ad-2ad7-43af-b498-4595317b365e", 
+                "small": "https://thumbnailer.mixcloud.com/unsafe/25x25/profile/4/b/4/2/63ad-2ad7-43af-b498-4595317b365e", 
+                "thumbnail": "https://thumbnailer.mixcloud.com/unsafe/50x50/profile/4/b/4/2/63ad-2ad7-43af-b498-4595317b365e"
+            }, 
+            "key": "/johnnyofficial/", 
+            "type": "user"
+        }, 
+        {
+            "username": "tommy", 
+            "name": "Tommy Surnames", 
+            "url": "https://www.mixcloud.com/tommy/", 
+            "pictures": {
+                "medium": "https://thumbnailer.mixcloud.com/unsafe/100x100/profile/4/1/5/1/3ce4-bdd6-6689-bc80-98e51afb51fe", 
+                "320wx320h": "https://thumbnailer.mixcloud.com/unsafe/320x320/profile/4/1/5/1/3ce4-bdd6-6689-bc80-98e51afb51fe", 
+                "extra_large": "https://thumbnailer.mixcloud.com/unsafe/600x600/profile/4/1/5/1/3ce4-bdd6-6689-bc80-98e51afb51fe", 
+                "large": "https://thumbnailer.mixcloud.com/unsafe/300x300/profile/4/1/5/1/3ce4-bdd6-6689-bc80-98e51afb51fe", 
+                "640wx640h": "https://thumbnailer.mixcloud.com/unsafe/640x640/profile/4/1/5/1/3ce4-bdd6-6689-bc80-98e51afb51fe", 
+                "medium_mobile": "https://thumbnailer.mixcloud.com/unsafe/80x80/profile/4/1/5/1/3ce4-bdd6-6689-bc80-98e51afb51fe", 
+                "small": "https://thumbnailer.mixcloud.com/unsafe/25x25/profile/4/1/5/1/3ce4-bdd6-6689-bc80-98e51afb51fe", 
+                "thumbnail": "https://thumbnailer.mixcloud.com/unsafe/50x50/profile/4/1/5/1/3ce4-bdd6-6689-bc80-98e51afb51fe"
+            }, 
+            "key": "/tommy/", 
+            "type": "user"
+        }
+    ], 
+    "name": "Jimmy's followers"
+}

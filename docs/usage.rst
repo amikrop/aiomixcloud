@@ -70,7 +70,7 @@ and are responsible for downloading a list of resources::
 
 Items of a resource list can also be accessed by their key::
 
-    popular['chris-smith/funky-mix']  # <Resource: Cloudcast '/chris-smit...'>
+    popular['chris/funky-mix']  # <Resource: Cloudcast '/chris/funky-mix/'>
 
 The :meth:`~aiomixcloud.core.Mixcloud.search` method, which can accept a
 `type` argument, among ``'cloudcast'`` (default), ``'user'`` and ``'tag'``,
@@ -294,7 +294,7 @@ Synchronous mode
 All the functionality of the package is also available for synchronous
 (i.e blocking) usage.  :class:`~aiomixcloud.sync.MixcloudSync` and
 :class:`~aiomixcloud.sync.MixcloudOAuthSync` provide the same interface as
-their asynchronous versions, with all the coroutine methods being now classic
+their asynchronous versions, with all the coroutine methods now being classic
 methods.  Context management becomes synchronous and methods of returned
 objects are synchronous as well::
 

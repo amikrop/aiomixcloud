@@ -1,0 +1,125 @@
+{
+    "paging": {
+        "previous": "https://api.mixcloud.com/chris/favorites/?limit=20&metadata=1&since=2017-09-29+08%3A45%3A18", 
+        "next": "https://api.mixcloud.com/chris/favorites/?limit=20&metadata=1&until=2015-04-29+18%3A59%3A19"
+    }, 
+    "data": [
+        {
+            "tags": [
+                {
+                    "url": "https://www.mixcloud.com/discover/electronica/", 
+                    "type": "tag", 
+                    "name": "Electronica", 
+                    "key": "/discover/electronica/"
+                }, 
+                {
+                    "url": "https://www.mixcloud.com/discover/deep-techno/", 
+                    "type": "tag", 
+                    "name": "Deep techno", 
+                    "key": "/discover/deep-techno/"
+                }
+            ], 
+            "play_count": 6365, 
+            "user": {
+                "username": "someone", 
+                "name": "Someone Baz", 
+                "url": "https://www.mixcloud.com/someone/", 
+                "pictures": {
+                    "medium": "https://thumbnailer.mixcloud.com/unsafe/100x100/profile/3/6/2/a/ff0a-8170-4f59-8c6e-f64487e2c693", 
+                    "320wx320h": "https://thumbnailer.mixcloud.com/unsafe/320x320/profile/3/6/2/a/ff0a-8170-4f59-8c6e-f64487e2c693", 
+                    "extra_large": "https://thumbnailer.mixcloud.com/unsafe/600x600/profile/3/6/2/a/ff0a-8170-4f59-8c6e-f64487e2c693", 
+                    "large": "https://thumbnailer.mixcloud.com/unsafe/300x300/profile/3/6/2/a/ff0a-8170-4f59-8c6e-f64487e2c693", 
+                    "640wx640h": "https://thumbnailer.mixcloud.com/unsafe/640x640/profile/3/6/2/a/ff0a-8170-4f59-8c6e-f64487e2c693", 
+                    "medium_mobile": "https://thumbnailer.mixcloud.com/unsafe/80x80/profile/3/6/2/a/ff0a-8170-4f59-8c6e-f64487e2c693", 
+                    "small": "https://thumbnailer.mixcloud.com/unsafe/25x25/profile/3/6/2/a/ff0a-8170-4f59-8c6e-f64487e2c693", 
+                    "thumbnail": "https://thumbnailer.mixcloud.com/unsafe/50x50/profile/3/6/2/a/ff0a-8170-4f59-8c6e-f64487e2c693"
+                }, 
+                "key": "/someone/", 
+                "type": "user"
+            }, 
+            "key": "/someone/techno-mix-enr42/", 
+            "created_time": "2017-09-29T07:15:37Z", 
+            "audio_length": 3076, 
+            "slug": "techno-mix-enr42", 
+            "favorite_count": 217, 
+            "listener_count": 2654, 
+            "name": "Techno Mix [enr42]", 
+            "url": "https://www.mixcloud.com/someone/techno-mix-enr42/", 
+            "pictures": {
+                "medium": "https://thumbnailer.mixcloud.com/unsafe/100x100/extaudio/1/6/2/0/c964-58b3-4121-bcd8-a77f920c4d01", 
+                "768wx768h": "https://thumbnailer.mixcloud.com/unsafe/768x768/extaudio/1/6/2/0/c964-58b3-4121-bcd8-a77f920c4d01", 
+                "320wx320h": "https://thumbnailer.mixcloud.com/unsafe/320x320/extaudio/1/6/2/0/c964-58b3-4121-bcd8-a77f920c4d01", 
+                "extra_large": "https://thumbnailer.mixcloud.com/unsafe/600x600/extaudio/1/6/2/0/c964-58b3-4121-bcd8-a77f920c4d01", 
+                "large": "https://thumbnailer.mixcloud.com/unsafe/300x300/extaudio/1/6/2/0/c964-58b3-4121-bcd8-a77f920c4d01", 
+                "640wx640h": "https://thumbnailer.mixcloud.com/unsafe/640x640/extaudio/1/6/2/0/c964-58b3-4121-bcd8-a77f920c4d01", 
+                "medium_mobile": "https://thumbnailer.mixcloud.com/unsafe/80x80/extaudio/1/6/2/0/c964-58b3-4121-bcd8-a77f920c4d01", 
+                "small": "https://thumbnailer.mixcloud.com/unsafe/25x25/extaudio/1/6/2/0/c964-58b3-4121-bcd8-a77f920c4d01", 
+                "1024wx1024h": "https://thumbnailer.mixcloud.com/unsafe/1024x1024/extaudio/1/6/2/0/c964-58b3-4121-bcd8-a77f920c4d01", 
+                "thumbnail": "https://thumbnailer.mixcloud.com/unsafe/50x50/extaudio/1/6/2/0/c964-58b3-4121-bcd8-a77f920c4d01"
+            }, 
+            "repost_count": 45, 
+            "updated_time": "2017-09-29T07:07:28Z", 
+            "comment_count": 17, 
+            "type": "cloudcast"
+        }, 
+        {
+            "tags": [
+                {
+                    "url": "https://www.mixcloud.com/discover/techno/", 
+                    "type": "tag", 
+                    "name": "Techno", 
+                    "key": "/discover/techno/"
+                }, 
+                {
+                    "url": "https://www.mixcloud.com/discover/house-music/", 
+                    "type": "tag", 
+                    "name": "House music", 
+                    "key": "/discover/house-music/"
+                }
+            ], 
+            "play_count": 995, 
+            "user": {
+                "username": "cooldj", 
+                "name": "Cool DJ", 
+                "url": "https://www.mixcloud.com/cooldj/", 
+                "pictures": {
+                    "medium": "https://thumbnailer.mixcloud.com/unsafe/100x100/profile/9/e/e/2/f5b5-4e15-4bf5-9401-10b5836cf1b9.jpg", 
+                    "320wx320h": "https://thumbnailer.mixcloud.com/unsafe/320x320/profile/9/e/e/2/f5b5-4e15-4bf5-9401-10b5836cf1b9.jpg", 
+                    "extra_large": "https://thumbnailer.mixcloud.com/unsafe/600x600/profile/9/e/e/2/f5b5-4e15-4bf5-9401-10b5836cf1b9.jpg", 
+                    "large": "https://thumbnailer.mixcloud.com/unsafe/300x300/profile/9/e/e/2/f5b5-4e15-4bf5-9401-10b5836cf1b9.jpg", 
+                    "640wx640h": "https://thumbnailer.mixcloud.com/unsafe/640x640/profile/9/e/e/2/f5b5-4e15-4bf5-9401-10b5836cf1b9.jpg", 
+                    "medium_mobile": "https://thumbnailer.mixcloud.com/unsafe/80x80/profile/9/e/e/2/f5b5-4e15-4bf5-9401-10b5836cf1b9.jpg", 
+                    "small": "https://thumbnailer.mixcloud.com/unsafe/25x25/profile/9/e/e/2/f5b5-4e15-4bf5-9401-10b5836cf1b9.jpg", 
+                    "thumbnail": "https://thumbnailer.mixcloud.com/unsafe/50x50/profile/9/e/e/2/f5b5-4e15-4bf5-9401-10b5836cf1b9.jpg"
+                }, 
+                "key": "/cooldj/", 
+                "type": "user"
+            }, 
+            "key": "/cooldj/105-cool-dj-set/", 
+            "created_time": "2017-01-04T09:56:10Z", 
+            "audio_length": 3645, 
+            "slug": "105-cool-dj-set", 
+            "favorite_count": 43, 
+            "listener_count": 195, 
+            "name": "105 - Cool DJ Set", 
+            "url": "https://www.mixcloud.com/cooldj/105-cool-dj-set/", 
+            "pictures": {
+                "medium": "https://thumbnailer.mixcloud.com/unsafe/100x100/extaudio/2/3/f/0/7e80-339a-42f6-bcfa-721c083698e9", 
+                "768wx768h": "https://thumbnailer.mixcloud.com/unsafe/768x768/extaudio/2/3/f/0/7e80-339a-42f6-bcfa-721c083698e9", 
+                "320wx320h": "https://thumbnailer.mixcloud.com/unsafe/320x320/extaudio/2/3/f/0/7e80-339a-42f6-bcfa-721c083698e9", 
+                "extra_large": "https://thumbnailer.mixcloud.com/unsafe/600x600/extaudio/2/3/f/0/7e80-339a-42f6-bcfa-721c083698e9", 
+                "large": "https://thumbnailer.mixcloud.com/unsafe/300x300/extaudio/2/3/f/0/7e80-339a-42f6-bcfa-721c083698e9", 
+                "640wx640h": "https://thumbnailer.mixcloud.com/unsafe/640x640/extaudio/2/3/f/0/7e80-339a-42f6-bcfa-721c083698e9", 
+                "medium_mobile": "https://thumbnailer.mixcloud.com/unsafe/80x80/extaudio/2/3/f/0/7e80-339a-42f6-bcfa-721c083698e9", 
+                "small": "https://thumbnailer.mixcloud.com/unsafe/25x25/extaudio/2/3/f/0/7e80-339a-42f6-bcfa-721c083698e9", 
+                "1024wx1024h": "https://thumbnailer.mixcloud.com/unsafe/1024x1024/extaudio/2/3/f/0/7e80-339a-42f6-bcfa-721c083698e9", 
+                "thumbnail": "https://thumbnailer.mixcloud.com/unsafe/50x50/extaudio/2/3/f/0/7e80-339a-42f6-bcfa-721c083698e9"
+            }, 
+            "repost_count": 14, 
+            "updated_time": "2017-01-04T09:55:26Z", 
+            "comment_count": 2, 
+            "type": "cloudcast"
+        }
+    ], 
+    "name": "Chris's favorites"
+}

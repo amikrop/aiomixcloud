@@ -1,7 +1,7 @@
 import re
 from pathlib import Path
 
-from setuptools import find_packages, setup
+from setuptools import setup
 
 
 init_path = Path('aiomixcloud') / '__init__.py'
@@ -21,7 +21,7 @@ setup(
     author='Aristotelis Mikropoulos',
     author_email='amikrop@gmail.com',
     url='https://github.com/amikrop/aiomixcloud',
-    packages=find_packages(),
+    packages=['aiomixcloud'],
     license='MIT',
     install_requires=[
         'aiohttp',
