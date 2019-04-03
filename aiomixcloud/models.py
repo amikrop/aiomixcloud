@@ -131,15 +131,17 @@ class AccessList(_WrapMixin, UserList):
 
 
 class Resource(AccessDict):
-    """A Mixcloud resource.  A resource is like an :class:`AccessDict`
-    object which has a "type" key.  When a "type" key is present in
-    and API (sub)object, suggesting it has a unique URL, it is
-    considered an API resource, that is an individual entity (a user,
-    a cloudcast, a tag, etc).  A :class:`Resource` object has
-    appropriately named methods for downloading information about its
-    sub-entities ("connections").  It also mirrors "targeted" methods
-    of its :class:`~aiomixcloud.core.Mixcloud` instance, passing them
-    its key as a first argument.  Targeted methods include "actions"
+    """Mixcloud API resource
+
+    A resource is like an :class:`AccessDict` object which has a "type"
+    key.  When a "type" key is present in an API (sub)object,
+    suggesting it has a unique URL, it is considered an API resource,
+    that is an individual entity (a user, a cloudcast, a tag, etc).
+    A :class:`Resource` object has appropriately named methods for
+    downloading information about its sub-entities ("connections").
+    It also mirrors "targeted" methods of its
+    :class:`~aiomixcloud.core.Mixcloud` instance, passing them its key
+    as a first argument.  Targeted methods include "actions"
     (e.g :meth:`~aiomixcloud.core.Mixcloud.follow` or
     :meth:`~aiomixcloud.core.Mixcloud.unfavorite`), embed-related
     methods and :meth:`~aiomixcloud.core.Mixcloud.edit`.

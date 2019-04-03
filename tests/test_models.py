@@ -1,31 +1,32 @@
 import asyncio
 import unittest
 from collections import UserDict, UserList
+from unittest.mock import Mock, patch
 
 from aiomixcloud import Mixcloud
 from aiomixcloud.models import AccessDict, AccessList, Resource, _WrapMixin
 
 
-def async_classmethod(method):
-    """Return blocking version of coroutine `method`,
-    making it a `classmethod`.
-    """
-    def wrapper(cls):
+def synced(method):
+    """Return a blocking version of coroutine `method`."""
+    def wrapper(argument):
         """Wait for coroutine `method` to complete."""
         loop = asyncio.get_event_loop()
-        loop.run_until_complete(method(cls))
-    return classmethod(wrapper)
+        loop.run_until_complete(method(argument))
+    return wrapper
 
 
 class MixcloudTestCase(unittest.TestCase):
     """Testcase with a `Mixcloud` instance available."""
 
-    @async_classmethod
+    @classmethod
+    @synced
     async def setUpClass(cls):
         """Store `Mixcloud` instance."""
         cls.mixcloud = Mixcloud()
 
-    @async_classmethod
+    @classmethod
+    @synced
     async def tearDownClass(cls):
         """Close `Mixcloud` instance."""
         await cls.mixcloud.close()
@@ -217,17 +218,18 @@ class TestAccessList(MixcloudTestCase):
 class TestResource(MixcloudTestCase):
     """Test `Resource`."""
 
-    @classmethod
-    def setUpClass(cls):
+    def setUp(self):
         """Store test data."""
-        super().setUpClass()
-        cls.resource = Resource(
+        self.connections = ['comments', 'followers', 'favorites']
+        self.resource = Resource(
             {'username': 'bob',
              'city': 'London', 'key': '/bob/',
              'metadata': {
-                'connections': {
-                    'followers': 'https://api.mixcloud.com/bob/followers/'}},
-             'type': 'user'}, mixcloud=cls.mixcloud)
+                 'connections': {
+                     'comments': 'https://api.mixcloud.com/bob/comments/',
+                     'followers': 'https://api.mixcloud.com/bob/followers/',
+                     'favorites': 'https://api.mixcloud.com/bob/favorites/'}},
+             'type': 'user'}, mixcloud=self.mixcloud)
 
     def test_repr(self):
         """`Resource` must have a proper representation."""
@@ -254,3 +256,35 @@ class TestResource(MixcloudTestCase):
         """
         with self.assertRaises(AttributeError):
             self.resource.not_there
+
+    def test_connections_exist(self):
+        """`Resource` must have methods respective to
+        its "connections".
+        """
+        for connection in self.connections:
+            method = getattr(self.resource, connection)
+            self.assertTrue(callable(method))
+
+    @synced
+    @patch('aiomixcloud.core.Mixcloud')
+    async def test_connections(self, mock_mixcloud):
+        """`Resource`'s "connections" must return a `ResourceList`
+        of respective `Resource`s.
+        """
+        for connection in self.connections:
+            method = getattr(self.resource, connection)
+
+            async def mock_get():
+                """Return a `ResourceList` appropriate
+                for `connection`.
+                """
+                return 'todo'
+
+            mock_mixcloud.get = Mock()
+            mock_mixcloud.get.return_value = mock_get()
+            self.resource.mixcloud = mock_mixcloud
+
+            resource_list = await method()
+            mock_mixcloud.get.assert_called_once_with(
+                f'https://api.mixcloud.com/bob/{connection}/', relative=False)
+            self.assertEqual(resource_list, 'todo')

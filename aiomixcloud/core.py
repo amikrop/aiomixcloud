@@ -28,25 +28,26 @@ from aiomixcloud.models import AccessDict, Resource, ResourceList
 
 
 class Mixcloud:
-    """Asynchronous Mixcloud API handler.  This class orchestrates the
-    interaction of the package's user with the Mixcloud API.  Being
-    ready for use with no explicit configuration at all, as well as
-    being capable of customized operation, it provides the methods to
-    hit the API.  A common to use method and base for many of the rest,
-    is the :meth:`get` method, which takes a "key", a URL segment
-    corresponding to a unique API resource and returns a native, yet
-    familiar and handy data structure representing that resource.
-    There, also, exist a family of methods, like :meth:`popular`,
-    which receive pagination arguments and return a list of resources.
-    The class provides some personalized methods, that is methods which
-    require authorization to run, through an access token.  These are
-    methods like :meth:`follow` and :meth:`unfollow`.  In this category
-    belong the methods about uploading data to the server,
-    :meth:`upload` and :meth:`edit`.  Finally, there are methods about
-    getting embedding information for some resource, like
-    :meth:`embed_html`.  The class can be used as an asynchronous
-    context manager to avoid having to call :meth:`close` explicitly,
-    which closes the session.
+    """Asynchronous Mixcloud API handler
+
+    This class orchestrates the interaction of the package's user with
+    the Mixcloud API.  Being ready for use with no explicit
+    configuration at all, as well as being capable of customized
+    operation, it provides the methods to hit the API.  A common to use
+    method and base for many of the rest, is the :meth:`get` method,
+    which takes a "key", a URL segment corresponding to a unique API
+    resource and returns a native, yet familiar and handy data
+    structure representing that resource.  There, also, exist a family
+    of methods, like :meth:`popular`, which receive pagination
+    arguments and return a list of resources.  The class provides some
+    personalized methods, that is methods which require authorization
+    to run, through an access token.  These are methods like
+    :meth:`follow` and :meth:`unfollow`.  In this category belong the
+    methods about uploading data to the server, :meth:`upload` and
+    :meth:`edit`.  Finally, there are methods about getting embedding
+    information for some resource, like :meth:`embed_html`.  The class
+    can be used as an asynchronous context manager to avoid having to
+    call :meth:`close` explicitly, which closes the session.
     """
 
     #: Default Mixcloud root URL

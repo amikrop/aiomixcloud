@@ -29,10 +29,12 @@ from aiomixcloud.exceptions import MixcloudOAuthError
 
 
 class MixcloudOAuth:
-    """Mixcloud OAuth authorization.  By having :attr:`client_id` and
-    :attr:`redirect_uri` set, a :class:`MixcloudOAuth` object provides
-    :attr:`authorization_url`, a URL to forward the end user to, where
-    they will be able to "allow the application access to their data".
+    """Mixcloud OAuth authorization
+
+    By having :attr:`client_id` and :attr:`redirect_uri` set,
+    a :class:`MixcloudOAuth` object provides :attr:`authorization_url`,
+    a URL to forward the end user to, where they will be able to
+    "allow the application access to their data".
     It also provides the :meth:`access_token` method, which trades
     an OAuth code for an access token (requiring :attr:`client_secret`
     as well as the previously mentionted attributes).
