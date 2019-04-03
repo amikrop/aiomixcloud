@@ -224,8 +224,7 @@ class Resource(AccessDict):
     async def load(self, *, force=False):
         """Load full resource information from detail page.
         Do nothing in case :attr:`_full` is ``True``, unless `force`
-        is set.  Return fetched resource, so this can be used in
-        chained calls.
+        is set.  Return `self`, so this can be used in chained calls.
         """
         if not self._full or force:
             full_resource = await self.mixcloud.get(self['key'])
