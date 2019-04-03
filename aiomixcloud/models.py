@@ -148,14 +148,15 @@ class Resource(AccessDict):
     """
 
     def __init__(self, data, *, full=False, mixcloud):
-        """Pass `mixcloud` to super's `__init__`, store whether
-        resource is full and create resource connections.
+        """Pass `mixcloud` to super's `__init__` and store whether
+        resource is full.  If it is, create resource connections.
         """
         super().__init__(data, mixcloud=mixcloud)
         #: Whether all of resource data has been downloaded (by having
         #: accessed the detail page).
         self._full = full
-        self._create_connections()
+        if full:
+            self._create_connections()
 
     def __getattr__(self, name):
         """If super fails to find an attribute named `name`, try
@@ -231,7 +232,7 @@ class Resource(AccessDict):
             self.update(full_resource)
             self._create_connections()
             self._full = True
-        return full_resource
+        return self
 
 
 class ResourceList(AccessDict):
