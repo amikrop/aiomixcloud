@@ -25,7 +25,7 @@ class MixcloudTestCase(unittest.TestCase):
     @classmethod
     @synced
     async def setUpClass(cls):
-        """Store `Mixcloud` instance."""
+        """Store a new `Mixcloud` instance."""
         cls.mixcloud = Mixcloud()
 
     @classmethod
@@ -221,18 +221,25 @@ class TestAccessList(MixcloudTestCase):
 class TestResource(MixcloudTestCase):
     """Test `Resource`."""
 
+    @classmethod
+    def setUpClass(cls):
+        """Store test data for `Resource.load` tests."""
+        super().setUpClass()
+        cls.data = {'username': 'john', 'name': 'John Fooer',
+                    'key': '/john/', 'type': 'user', 'cloudcast_count': 6}
+
     def setUp(self):
         """Store test data."""
-        self.connections = ['comments', 'followers', 'favorites']
-        self.resource = Resource(
-            {'username': 'bob',
-             'city': 'London', 'key': '/bob/',
-             'metadata': {
-                 'connections': {
-                     'comments': 'https://api.mixcloud.com/bob/comments/',
-                     'followers': 'https://api.mixcloud.com/bob/followers/',
-                     'favorites': 'https://api.mixcloud.com/bob/favorites/'}},
-             'type': 'user'}, full=True, mixcloud=self.mixcloud)
+        self.user_root = 'https://api.mixcloud.com/bob/'
+        data = {'username': 'bob', 'city': 'London', 'key': '/bob/',
+                'metadata': {
+                    'connections': {
+                        'comments': f'{self.user_root}comments/',
+                        'followers': f'{self.user_root}followers/',
+                        'favorites': f'{self.user_root}favorites/'}},
+                'type': 'user'}
+        self.resource = Resource(data, full=True, mixcloud=self.mixcloud)
+        self.connections = data['metadata']['connections'].keys()
 
     def test_repr(self):
         """`Resource` must have a proper representation."""
@@ -255,13 +262,13 @@ class TestResource(MixcloudTestCase):
     def test_targeting_failure(self):
         """`Resource` must raise `AttributeError` when accessed with
         a missing attribute which is not included in the "targeting"
-        ones.
+        methods.
         """
         with self.assertRaises(AttributeError):
             self.resource.not_there
 
     def test_connections_existence(self):
-        """`Resource` must have methods respective to
+        """`Resource` must have methods corresponding to
         its "connections".
         """
         for connection in self.connections:
@@ -295,8 +302,7 @@ class TestResource(MixcloudTestCase):
 
             resource_list = await method()
             mock_mixcloud.get.assert_called_once_with(
-                f'https://api.mixcloud.com/bob/{connection}/', relative=False)
-            # TODO: Perhaps build equality check into models?
+                f'{self.user_root}{connection}/', relative=False)
             self.assertIsInstance(resource_list, ResourceList)
             self.assertEqual(resource_list.data, expected_resource_list.data)
 
@@ -304,26 +310,24 @@ class TestResource(MixcloudTestCase):
     @patch('aiomixcloud.core.Mixcloud')
     async def test_load(self, mock_mixcloud):
         """`Resource`'s `load` method must load all the available data,
-        mark self as "full" and return an equivalent `Resource`.
+        mark self as "full" and return it.
         """
-        data = {'username': 'john', 'name': 'John Fooer',
-                'key': '/john/', 'type': 'user'}
-        rich_data = {'cloudcast_count': 6, **data}
-        resource = Resource(data, mixcloud=self.mixcloud)
-
         async def mock_get():
             """Return a `Resource` with more data, marked as "full"."""
-            return Resource(rich_data, full=True, mixcloud=self.mixcloud)
+            return Resource(self.data, full=True, mixcloud=self.mixcloud)
 
         mock_mixcloud.get.return_value = mock_get()
-        resource.mixcloud = mock_mixcloud
 
+        incomplete_data = self.data.copy()
+        del incomplete_data['cloudcast_count']
+
+        resource = Resource(incomplete_data, mixcloud=mock_mixcloud)
         result = await resource.load()
+
         mock_mixcloud.get.assert_called_once_with('/john/')
         self.assertTrue(result._full)
-        self.assertEqual(result.data, rich_data)
-        self.assertTrue(resource._full)
-        self.assertEqual(resource.data, rich_data)
+        self.assertEqual(result.data, self.data)
+        self.assertIs(result, resource)
 
     @synced
     @patch('aiomixcloud.core.Mixcloud')
@@ -331,9 +335,7 @@ class TestResource(MixcloudTestCase):
         """`Resource`'s `load` method must not load any data anew
         if `Resource` is already "full", unless `force` is set.
         """
-        data = {'username': 'john', 'name': 'John Fooer',
-                'key': '/john/', 'type': 'user', 'cloudcast_count': 6}
-        resource = Resource(data, full=True, mixcloud=self.mixcloud)
+        resource = Resource(self.data, full=True, mixcloud=self.mixcloud)
 
         async def mock_get():
             """Return the same `Resource`."""
@@ -344,8 +346,8 @@ class TestResource(MixcloudTestCase):
 
         await resource.load()
         mock_mixcloud.get.assert_not_called()
-        self.assertEqual(resource.data, data)
+        self.assertEqual(resource.data, self.data)
 
         await resource.load(force=True)
         mock_mixcloud.get.assert_called_once_with('/john/')
-        self.assertEqual(resource.data, data)
+        self.assertEqual(resource.data, self.data)
