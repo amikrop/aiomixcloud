@@ -142,7 +142,8 @@ class Mixcloud:
             return None
         return data
 
-    async def get(self, url, *, relative=True, **params):
+    async def get(self, url, *, relative=True,
+                  create_connections=True, **params):
         """Send a GET request to API and return JSON-decoded data.
         If `relative` is ``True``, `url` is considered relative to the
         API root, otherwise it is considered as an absolute URL.
@@ -179,7 +180,9 @@ class Mixcloud:
             # List of resources
             return self._resource_list_class(data, mixcloud=self)
         # Single resource
-        return self._resource_class(data, full=True, mixcloud=self)
+        return self._resource_class(
+            data, full=True,
+            create_connections=create_connections, mixcloud=self)
 
     async def me(self):
         """Get information about user authorized by

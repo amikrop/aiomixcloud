@@ -147,15 +147,17 @@ class Resource(AccessDict):
     methods and :meth:`~aiomixcloud.core.Mixcloud.edit`.
     """
 
-    def __init__(self, data, *, full=False, mixcloud):
+    def __init__(self, data, *, full=False,
+                 create_connections=True, mixcloud):
         """Pass `mixcloud` to super's `__init__` and store whether
-        resource is full.  If it is, create resource connections.
+        resource is full.  If it is full and `create_connections`
+        is set, create resource connections.
         """
         super().__init__(data, mixcloud=mixcloud)
         #: Whether all of resource data has been downloaded (by having
         #: accessed the detail page).
         self._full = full
-        if full:
+        if full and create_connections:
             self._create_connections()
 
     def __getattr__(self, name):
@@ -227,7 +229,8 @@ class Resource(AccessDict):
         is set.  Return `self`, so this can be used in chained calls.
         """
         if not self._full or force:
-            full_resource = await self.mixcloud.get(self['key'])
+            full_resource = await self.mixcloud.get(
+                self['key'], create_connections=False)
             self.update(full_resource)
             self._create_connections()
             self._full = True
