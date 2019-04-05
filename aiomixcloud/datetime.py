@@ -21,6 +21,7 @@ local timezone.  Result will be converted in UTC, if not already there.
 from datetime import datetime, timezone
 
 import dateutil.parser
+from dateutil.tz import tzlocal
 
 
 def _to_datetime(value):
