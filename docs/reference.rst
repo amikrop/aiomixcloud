@@ -1,5 +1,5 @@
-Library Reference
-~~~~~~~~~~~~~~~~~
+Module Reference
+~~~~~~~~~~~~~~~~
 
 aiomixcloud.auth module
 -----------------------

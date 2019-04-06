@@ -92,6 +92,10 @@ a `page` argument can be specified (zero-indexed), giving 20 results per page
     some_jazz = await mixcloud.search('jazz', page=2)
     metal_music = await mixcloud.search('metal', page=4, per_page=30)
 
+*Note: Timezone-naive datetime values (either human-readable strings
+or* :class:`~datetime.datetime` *objects) will be treated as being in the
+current local timezone.*
+
 :class:`Resource lists <aiomixcloud.models.ResourceList>` have a
 :meth:`~aiomixcloud.models.ResourceList.previous` and a
 :meth:`~aiomixcloud.models.ResourceList.next` method which return the previous

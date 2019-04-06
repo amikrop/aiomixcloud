@@ -21,6 +21,16 @@ local timezone.  Result will be converted in UTC, if not already there.
 from datetime import datetime, timezone
 
 import dateutil.parser
+from dateutil.tz import tzlocal
+
+
+def _as_utc(dt):
+    """Convert and return given `dt` in UTC.  If it is timezone-naive,
+    treat it as being in the local timezone.
+    """
+    if dt.tzinfo is None or dt.tzinfo.utcoffset(dt) is None:
+        dt = dt.replace(tzinfo=tzlocal())
+    return dt.astimezone(timezone.utc)
 
 
 def _to_datetime(value):
@@ -29,7 +39,7 @@ def _to_datetime(value):
     """
     if isinstance(value, datetime):
         # Already a datetime, turn it to UTC and return it.
-        return value.astimezone(timezone.utc)
+        return _as_utc(value)
 
     try:
         # Try to parse it as a human-readable string.
@@ -42,9 +52,9 @@ def _to_datetime(value):
             message = 'expected datetime.datetime object, valid datetime ' \
                       'string or timestamp'
             raise TypeError(message) from None
-        return datetime.utcfromtimestamp(value).replace(tzinfo=timezone.utc)
+        return datetime.fromtimestamp(value, timezone.utc)
 
-    return parsed.astimezone(timezone.utc)
+    return _as_utc(parsed)
 
 
 def format_datetime(value):
