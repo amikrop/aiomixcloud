@@ -80,3 +80,25 @@ class TestDatetime(unittest.TestCase):
             (1383429086, datetime(2013, 11, 2, 21, 51, 26)),
         ]
         self.check_aware_values(values)
+
+    def test_to_datetime_failure(self):
+        """`to_datetime` must raise `TypeError` when called
+        with invalid input."""
+        invalid_values = ['random text', [True, 3], {}]
+        for value in invalid_values:
+            with self.assertRaises(TypeError):
+                _to_datetime(value)
+
+    def test_format_datetime(self):
+        """`format_datetime` must return a string in
+        the "YYYY-MM-DDTHH:MM:SSZ" format.
+        """
+        value = datetime(2019, 3, 4, 20, 23, 17, tzinfo=timezone.utc)
+        result = format_datetime(value)
+        self.assertEqual(result, '2019-03-04T20:23:17Z')
+
+    def test_to_timestamp(self):
+        """`to_timestamp` must return a UNIX timestamp."""
+        value = datetime(2020, 6, 1, 18, 21, 1, tzinfo=timezone.utc)
+        result = to_timestamp(value)
+        self.assertEqual(result, 1591035661)

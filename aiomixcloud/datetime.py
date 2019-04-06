@@ -58,8 +58,8 @@ def _to_datetime(value):
 
 
 def format_datetime(value):
-    """Return a datetime string in "YYYY-MM-DDTHH:MM:SSZ" format, out
-    of a datetime-like `value`.
+    """Return a datetime string in the "YYYY-MM-DDTHH:MM:SSZ" format,
+    out of a datetime-like `value`.
     """
     iso = _to_datetime(value).isoformat()
     return f'{iso[:-6]}Z'
