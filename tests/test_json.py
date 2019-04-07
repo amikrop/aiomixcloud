@@ -5,7 +5,7 @@ from pathlib import Path
 from aiomixcloud.json import MixcloudJSONDecoder
 
 
-class JSONTestCase(unittest.TestCase):
+class TestMixcloudJSONDecoder(unittest.TestCase):
     """Test `MixcloudJSONDecoder`."""
 
     @classmethod
