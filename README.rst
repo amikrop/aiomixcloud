@@ -62,11 +62,11 @@ You can start using *aiomixcloud* as simply as:
     async with Mixcloud() as mixcloud:
         cloudcast = await mixcloud.get('bob/cool-mix')
 
-        # Data is available both as items and attributes:
+        # Data is available both as items and attributes
         cloudcast.user.name
         cloudcast['pictures']['large']
 
-        # Iterate over associated resources:
+        # Iterate over associated resources
         for c in await cloudcast.comments():
             c.comment
 
@@ -78,11 +78,11 @@ enables a variety of possibilities:
 
     # Inside your coroutine:
     async with Mixcloud(access_token=access_token) as mixcloud:
-        # Follow a user:
+        # Follow a user
         user = await mixcloud.get('alice')
         await user.follow()
 
-        # Upload a cloudcast:
+        # Upload a cloudcast
         await mixcloud.upload('myshow.mp3', 'My Show', picture='myshow.jpg')
 
 For more details see the `usage page
