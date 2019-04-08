@@ -11,8 +11,8 @@ class TestDisplayed(unittest.TestCase):
     @synced
     async def test_none(self):
         """`displayed` must call the decorated function with 'json' as
-        a 'format' `param` item and no other `param` items, when called
-        with no keyword arguments.
+        a 'format' `params` item and no other `params` items, when
+        called with no keyword arguments.
         """
         @displayed
         async def coroutine(*args, params):
@@ -72,12 +72,92 @@ class TestDisplayed(unittest.TestCase):
         """
         @displayed
         async def coroutine(*args, params):
-            """Dummy coroutine."""
+            """Dummy coroutine function."""
 
         with self.assertRaises(TypeError):
             await coroutine(nonexistent=9)
         with self.assertRaises(TypeError):
             await coroutine(5, True, missing='a')
+
+
+class TestPaginated(unittest.TestCase):
+    """Test `paginated`."""
+
+    @synced
+    async def test_none(self):
+        """`paginated` must call the decorated function with an empty
+        `params`, when called with no keyword arguments.
+        """
+        @paginated
+        async def coroutine(*args, params):
+            """Check that `params` contains the proper items
+            according to the calls.
+            """
+            self.assertFalse(params)
+
+        await coroutine()
+        await coroutine('foo', {3: 'bc'}, None)
+
+    @synced
+    async def test_some(self):
+        """`paginated` must call the decorated function with `params`
+        containing items corresponding to used keyword arguments, when
+        called with some of the available keyword arguments.
+        """
+        @paginated
+        async def coroutine(*args, params):
+            """Check that `params` contains the proper items
+            according to the calls.
+            """
+            for key in ('since', 'until'):
+                self.assertIn(key, params)
+                params.pop(key)
+            self.assertFalse(params)
+
+        await coroutine(since=39847202, until=39852219)
+        await coroutine(True, 'baz', -1, (2, False),
+                        since=892402130, until=892450038)
+
+    @synced
+    async def test_invalid(self):
+        """`paginated` must raise `AssertionError` when `params`'s
+        'page' item is specified simultaneously with any of
+        ['offset', 'limit', 'since', 'until'].
+        """
+        @paginated
+        async def coroutine(params):
+            """Dummy coroutine function."""
+
+        with self.assertRaises(AssertionError):
+            await coroutine(page=3, limit=90)
+
+    @synced
+    async def test_threshold_calculation(self):
+        """`paginated` must calculate `params`'s items 'offset'
+        and 'limit' items, out of 'page'.
+        """
+        @paginated
+        async def coroutine(params):
+            """Return the 'offset' and 'limit' items of `params`."""
+            return params['offset'], params['limit']
+
+        values = [
+            (2, None, 40, 20),
+            (8, None, 160, 20),
+            (0, None, 0, 20),
+            (7, 30, 210, 30),
+            (12, 45, 540, 45),
+            (2, 4, 8, 4),
+            (0, 1, 0, 1),
+        ]
+        for page, per_page, offset, limit in values:
+            params = {'page': page}
+            if per_page is not None:
+                params['per_page'] = per_page
+            result_offset, result_limit = await coroutine(**params)
+
+            self.assertEqual(result_offset, offset)
+            self.assertEqual(result_limit, limit)
 
 
 class TestTargeting(unittest.TestCase):
