@@ -67,8 +67,8 @@ You can start using *aiomixcloud* as simply as:
         cloudcast['pictures']['large']
 
         # Iterate over associated resources
-        for c in await cloudcast.comments():
-            c.comment
+        for comment in await cloudcast.comments():
+            comment.url
 
 `Authorized usage
 <https://aiomixcloud.readthedocs.io/en/latest/usage.html#authorization>`_
