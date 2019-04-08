@@ -60,7 +60,30 @@ You can start using *aiomixcloud* as simply as:
 
     # Inside your coroutine:
     async with Mixcloud() as mixcloud:
-        some_resource = await mixcloud.get(some_key)
+        cloudcast = await mixcloud.get('bob/cool-mix')
+
+        # Data is available both as items and attributes:
+        cloudcast.user.name
+        cloudcast['pictures']['large']
+
+        # Iterate over associated resources:
+        for c in await cloudcast.comments():
+            c.comment
+
+`Authorized usage
+<https://aiomixcloud.readthedocs.io/en/latest/usage.html#authorization>`_
+enables a variety of possibilities:
+
+.. code-block:: python
+
+    # Inside your coroutine:
+    async with Mixcloud(access_token=access_token) as mixcloud:
+        # Follow a user:
+        user = await mixcloud.get('alice')
+        await user.follow()
+
+        # Upload a cloudcast:
+        await mixcloud.upload('myshow.mp3', 'My Show', picture='myshow.jpg')
 
 For more details see the `usage page
 <https://aiomixcloud.readthedocs.io/en/latest/usage.html>`_

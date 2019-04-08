@@ -7,18 +7,6 @@ Specifically:
 
     - :class:`MixcloudOAuth`, producing authorization URLs and
       trading OAuth codes for access tokens.
-
-Acquiring an OAuth access token to enable authorized, personalized
-API calls, requires obtaining a "client ID" and a "client secret".
-This can be done by applying to Mixcloud to "create an application".
-As authorization is currently allowed only through web browser, the
-user must be redirected to a URL ("authorization URL") where they will
-be able to "allow the application access to their data".  This URL must
-contain a "client ID" and a "redirect URI" as GET parameters.  Once the
-user allows access, they will be redirected to that developer-chosen
-"redirect URI" with a `code` ("OAuth code") GET parameter.  Finally,
-with a request to an appropriate URL, the developer can exchange this
-OAuth code with an access token they can use on behalf of the user.
 """
 
 import aiohttp
