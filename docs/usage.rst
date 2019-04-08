@@ -15,7 +15,7 @@ about that :class:`resource <aiomixcloud.models.Resource>`::
     async with Mixcloud() as mixcloud:
         user = await mixcloud.get('bob')
 
-Result data is available both as dictionary items and attributes::
+Result data is available both as attributes and dictionary items::
 
     user.city  # 'London'
     user['favorite_count']  # 38

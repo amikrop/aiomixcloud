@@ -62,7 +62,7 @@ You can start using *aiomixcloud* as simply as:
     async with Mixcloud() as mixcloud:
         cloudcast = await mixcloud.get('bob/cool-mix')
 
-        # Data is available both as items and attributes
+        # Data is available both as attributes and items
         cloudcast.user.name
         cloudcast['pictures']['large']
 
