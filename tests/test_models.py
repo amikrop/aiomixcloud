@@ -8,15 +8,25 @@ from aiomixcloud.core import Mixcloud
 from aiomixcloud.models import AccessDict, AccessList, \
                                Resource, ResourceList, _WrapMixin
 
-from tests.synced import synced
+from tests.synced import SyncedTestCase
 
 
-class MixcloudTestCase(unittest.TestCase):
-    """Testcase with a mock Mixcloud instance available."""
+class MixcloudTestCaseMixin:
+    """Testcase mixin with a mock Mixcloud instance available."""
 
     def setUp(self):
         """Store a mock Mixcloud instance."""
         self.mixcloud = Mock(_resource_class=Resource)
+
+
+class MixcloudTestCase(MixcloudTestCaseMixin, unittest.TestCase):
+    """Testcase with a mock Mixcloud instance available."""
+
+
+class MixcloudSyncedTestCase(MixcloudTestCaseMixin, SyncedTestCase):
+    """Testcase with a mock Mixcloud instance available and all of its
+    coroutine methods turned into synchronous ones.
+    """
 
 
 class Wrap(_WrapMixin):
@@ -201,7 +211,7 @@ class TestAccessList(MixcloudTestCase):
             self.access_list['missing']
 
 
-class TestResource(MixcloudTestCase):
+class TestResource(MixcloudSyncedTestCase):
     """Test `Resource`."""
 
     @classmethod
@@ -242,7 +252,6 @@ class TestResource(MixcloudTestCase):
             method = getattr(self.resource, t)
             self.assertTrue(callable(method))
 
-    @synced
     async def test_targeting_failure(self):
         """`Resource` must raise `AttributeError` when accessed with
         a missing attribute which is not included in the "targeting"
@@ -261,7 +270,6 @@ class TestResource(MixcloudTestCase):
             method = getattr(self.resource, connection)
             self.assertTrue(callable(method))
 
-    @synced
     async def test_connections(self):
         """`Resource`'s "connections" must return a `ResourceList`
         of respective `Resource`s.
@@ -290,7 +298,6 @@ class TestResource(MixcloudTestCase):
             self.assertIsInstance(resource_list, ResourceList)
             self.assertEqual(resource_list.data, expected_resource_list.data)
 
-    @synced
     async def test_load(self):
         """`Resource`'s `load` method must load all the available data,
         mark self as "full" and return it.
@@ -313,7 +320,6 @@ class TestResource(MixcloudTestCase):
         self.assertEqual(result.data, self.data)
         self.assertIs(result, resource)
 
-    @synced
     async def test_load_full(self):
         """`Resource`'s `load` method must not load any data anew
         if `Resource` is already "full", unless `force` is set.
@@ -336,7 +342,7 @@ class TestResource(MixcloudTestCase):
         self.assertEqual(resource.data, self.data)
 
 
-class TestResourceList(MixcloudTestCase):
+class TestResourceList(MixcloudSyncedTestCase):
     """Test `ResourceList`."""
 
     def setUp(self):
@@ -404,7 +410,6 @@ class TestResourceList(MixcloudTestCase):
         value = repr(resource_list)
         self.assertEqual(value, '<ResourceList>')
 
-    @synced
     async def check_navigation(self, where):
         """Check that `ResourceList`'s navigation method indicated
         by `where` returns a `ResourceList` containing data from
@@ -436,7 +441,6 @@ class TestResourceList(MixcloudTestCase):
         """
         self.check_navigation('next')
 
-    @synced
     async def check_navigation_missing(self, where):
         """Check that `ResourceList`'s navigation method indicated
         by `where` returns ``None`` when the corresponding navigation
