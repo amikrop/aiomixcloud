@@ -143,7 +143,7 @@ class TestAccessDict(MixcloudTestCase):
         self.assertEqual(value, 8)
 
     def test_get_item_failure(self):
-        """`AccessDict` must raise `KeyError` when accessed with
+        """`AccessDict` must raise KeyError when accessed with
         missing key.
         """
         with self.assertRaises(KeyError):
@@ -157,7 +157,7 @@ class TestAccessDict(MixcloudTestCase):
         self.assertEqual(value, 3)
 
     def test_get_item_as_attribute_failure(self):
-        """`AccessDict` must raise `AttributeError` when accessing
+        """`AccessDict` must raise AttributeError when accessing
         attribute not corresponding to any key name.
         """
         with self.assertRaises(AttributeError):
@@ -189,7 +189,7 @@ class TestAccessList(MixcloudTestCase):
         self.assertEqual(value, {'foo': 'bar', 'test': 'aa'})
 
     def test_integer_index_failure(self):
-        """`AccessList` must raise `IndexError` when accessed with
+        """`AccessList` must raise IndexError when accessed with
         invalid integer index.
         """
         with self.assertRaises(IndexError):
@@ -204,7 +204,7 @@ class TestAccessList(MixcloudTestCase):
             value, {'name': 'Some User', 'key': '/someuser/', 'type': 'user'})
 
     def test_str_index_failure(self):
-        """`AccessList must raise `KeyError` when accessed with `str`
+        """`AccessList must raise KeyError when accessed with str
         key not matching any of its `Resource`-like items' keys.
         """
         with self.assertRaises(KeyError):
@@ -253,7 +253,7 @@ class TestResource(MixcloudSyncedTestCase):
             self.assertTrue(callable(method))
 
     async def test_targeting_failure(self):
-        """`Resource` must raise `AttributeError` when accessed with
+        """`Resource` must raise AttributeError when accessed with
         a missing attribute which is not included in the "targeting"
         methods.
         """
@@ -361,7 +361,7 @@ class TestResourceList(MixcloudSyncedTestCase):
         self.assertEqual(value, self.data['name'])
 
     def test_getitem_missing(self):
-        """`ResourceList` must raise `KeyError` when indexed with
+        """`ResourceList` must raise KeyError when indexed with
         a missing `str` key.
         """
         with self.assertRaises(KeyError):
@@ -376,7 +376,7 @@ class TestResourceList(MixcloudSyncedTestCase):
         self.assertEqual(value.data, self.data['data'][1])
 
     def test_getitem_delegated_missing(self):
-        """`ResourceList` must raise `IndexError` when indexed with
+        """`ResourceList` must raise IndexError when indexed with
         an out-of-range index.
         """
         with self.assertRaises(IndexError):
@@ -443,7 +443,7 @@ class TestResourceList(MixcloudSyncedTestCase):
 
     async def check_navigation_missing(self, where):
         """Check that `ResourceList`'s navigation method indicated
-        by `where` returns ``None`` when the corresponding navigation
+        by `where` returns None when the corresponding navigation
         URL is missing.
         """
         del self.data['paging'][where]
@@ -454,12 +454,12 @@ class TestResourceList(MixcloudSyncedTestCase):
 
     def test_previous_missing(self):
         """Check that `ResourceList`'s `previous` method returns
-        ``None`` when the "previous" navigation URL is missing.
+        None when the "previous" navigation URL is missing.
         """
         self.check_navigation_missing('previous')
 
     def test_next_missing(self):
         """Check that `ResourceList`'s `next` method returns
-        ``None`` when the "next" navigation URL is missing.
+        None when the "next" navigation URL is missing.
         """
         self.check_navigation_missing('next')

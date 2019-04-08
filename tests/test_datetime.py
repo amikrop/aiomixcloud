@@ -36,7 +36,7 @@ class TestDatetime(unittest.TestCase):
 
     def test_to_datetime_str_naive(self):
         """`_to_datetime` must return a UTC `datetime` when called
-        with a timezone-naive datetime-like `str`.
+        with a timezone-naive datetime-like str.
         """
         values = [
             ('2019-11-10T09:33:04', datetime(2019, 11, 10, 9, 33, 4)),
@@ -61,7 +61,7 @@ class TestDatetime(unittest.TestCase):
 
     def test_to_datetime_str_aware(self):
         """`_to_datetime` must return a UTC `datetime` when called
-        with a timezone-aware datetime-like `str`.
+        with a timezone-aware datetime-like str.
         """
         values = [
             ('2019-04-10T07:32:56Z', datetime(2019, 4, 10, 7, 32, 56)),
@@ -82,7 +82,7 @@ class TestDatetime(unittest.TestCase):
         self.check_aware_values(values)
 
     def test_to_datetime_failure(self):
-        """`to_datetime` must raise `TypeError` when called
+        """`to_datetime` must raise TypeError when called
         with invalid input."""
         invalid_values = ['random text', [True, 3], {}]
         for value in invalid_values:
