@@ -18,9 +18,9 @@ class SyncedTestCase(unittest.TestCase):
     synchronous (i.e blocking) methods.
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args):
         """Turn all of coroutine methods into synchronous ones."""
-        super().__init__(*args, **kwargs)
+        super().__init__(*args)
         for name in dir(self):
             attribute = getattr(self, name)
             if asyncio.iscoroutinefunction(attribute):

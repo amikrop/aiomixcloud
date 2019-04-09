@@ -199,9 +199,11 @@ class TestAccessList(MixcloudTestCase):
         """`AccessList must return `Resource`-like item with given
         `str` key as a key.
         """
-        value = self.access_list['someuser']
-        self.assertEqual(
-            value, {'name': 'Some User', 'key': '/someuser/', 'type': 'user'})
+        for key in ('someuser', 'someuser/', '/someuser'):
+            value = self.access_list[key]
+            self.assertEqual(
+                value, {'name': 'Some User',
+                        'key': '/someuser/', 'type': 'user'})
 
     def test_str_index_failure(self):
         """`AccessList must raise KeyError when accessed with str
