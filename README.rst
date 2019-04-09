@@ -70,9 +70,8 @@ You can start using *aiomixcloud* as simply as:
         for comment in await cloudcast.comments():
             comment.url
 
-`Authorized usage
-<https://aiomixcloud.readthedocs.io/en/latest/usage.html#authorization>`_
-enables a variety of possibilities:
+A variety of possibilities is enabled during `authorized usage
+<https://aiomixcloud.readthedocs.io/en/latest/usage.html#authorization>`_:
 
 .. code-block:: python
 

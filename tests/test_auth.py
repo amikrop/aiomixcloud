@@ -6,36 +6,12 @@ from aiomixcloud import MixcloudOAuthError
 from aiomixcloud.auth import MixcloudOAuth
 
 from tests.synced import SyncedTestCase
-
-
-class AsyncContextManagerMock(MagicMock):
-    """MagicMock supporting asynchronous context management."""
-
-    async def __aenter__(self):
-        """Return value that can be set while mocking."""
-        return self.aenter
-
-    async def __aexit__(self, *args):
-        """End asynchronous context management."""
-
-
-def configure_mock_session(mock_session, coroutine):
-    """Return a mock session object out of `mock_session` mocked class,
-    with proper asynchronous context management behavior.
-    """
-    async def close():
-        """Dumy coroutine function."""
-
-    session_object = mock_session.return_value
-    session_object.get = AsyncContextManagerMock()
-    session_object.get.return_value.aenter.json.return_value = coroutine()
-    session_object.close.return_value = close()
-    return session_object
+from tests.utils import AsyncContextManagerMock, configure_mock_session
 
 
 def make_mock_mixcloud(coroutine):
-    """Return a mock mixcloud object with proper asynchronous context
-    management behavior.
+    """Return a mock mixcloud object with asynchronous context
+    management behavior specified by `coroutine`.
     """
     mock = MagicMock()
     mock._session.get = AsyncContextManagerMock()
@@ -108,21 +84,21 @@ class TestMixcloudOAuth(SyncedTestCase):
         """
         auth = MixcloudOAuth(client_id='ah3',
                              redirect_uri='test.com', client_secret='uq8')
-        with patch('aiohttp.ClientSession') as mock_session:
+        with patch('aiohttp.ClientSession') as MockSession:
             async def coroutine():
                 """Return an access token after supposedly successful
                 OAuth transaction.
                 """
                 return {'access_token': 'k4jw'}
 
-            session_object = configure_mock_session(mock_session, coroutine)
+            mock_session = configure_mock_session(MockSession, coroutine)
             result = await auth.access_token('acb')
 
-            session_object.get.assert_called_once_with(
+            mock_session.get.assert_called_once_with(
                 yarl.URL('https://www.mixcloud.com/oauth/access_token'),
                 params={'client_id': 'ah3', 'redirect_uri': 'test.com',
                         'client_secret': 'uq8', 'code': 'acb'})
-            session_object.close.called_once_with()
+            mock_session.close.called_once_with()
         self.assertEqual(result, 'k4jw')
 
     async def test_access_token_mixcloud_instance(self):
@@ -174,14 +150,14 @@ class TestMixcloudOAuth(SyncedTestCase):
         """
         auth = MixcloudOAuth(client_id='jvs',
                              redirect_uri='abc.com', client_secret='4k9')
-        with patch('aiohttp.ClientSession') as mock_session:
+        with patch('aiohttp.ClientSession') as MockSession:
             async def coroutine():
                 """Do not include an access token in return value,
                 after supposedly failed OAuth transaction.
                 """
                 return {}
 
-            configure_mock_session(mock_session, coroutine)
+            configure_mock_session(MockSession, coroutine)
             result = await auth.access_token('ikq')
 
         self.assertIsNone(result)
@@ -212,15 +188,15 @@ class TestMixcloudOAuth(SyncedTestCase):
         """
         auth = MixcloudOAuth(client_id='e8f', redirect_uri='foo.net',
                              client_secret='cc7', raise_exceptions=False)
-        with patch('aiohttp.ClientSession') as mock_session:
+        with patch('aiohttp.ClientSession') as MockSession:
             async def coroutine():
                 """Do not include an access token in return value,
                 after supposedly failed OAuth transaction.
                 """
                 return {}
 
-            configure_mock_session(mock_session, coroutine)
-            result = await auth.access_token('ut5')
+            configure_mock_session(MockSession, coroutine)
+            result = await auth.access_token('5ut')
 
         self.assertIsNone(result)
 
