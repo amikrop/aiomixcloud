@@ -5,8 +5,22 @@ import yarl
 from aiomixcloud import MixcloudOAuthError
 from aiomixcloud.auth import MixcloudOAuth
 
+from tests.mock import AsyncContextManagerMock
 from tests.synced import SyncedTestCase
-from tests.utils import AsyncContextManagerMock, configure_mock_session
+
+
+def configure_mock_session(mock_session_class, coroutine):
+    """Return a mock session object out of the `mock_session_class`
+    mock class, with proper asynchronous context management behavior.
+    """
+    async def close():
+        """Dumy coroutine function."""
+
+    mock_session = mock_session_class.return_value
+    mock_session.get = AsyncContextManagerMock()
+    mock_session.get.return_value.aenter.json.return_value = coroutine()
+    mock_session.close.return_value = close()
+    return mock_session
 
 
 def make_mock_mixcloud(coroutine):
@@ -84,7 +98,7 @@ class TestMixcloudOAuth(SyncedTestCase):
         """
         auth = MixcloudOAuth(client_id='ah3',
                              redirect_uri='test.com', client_secret='uq8')
-        with patch('aiohttp.ClientSession') as MockSession:
+        with patch('aiohttp.ClientSession', autospec=True) as MockSession:
             async def coroutine():
                 """Return an access token after supposedly successful
                 OAuth transaction.
@@ -98,7 +112,7 @@ class TestMixcloudOAuth(SyncedTestCase):
                 yarl.URL('https://www.mixcloud.com/oauth/access_token'),
                 params={'client_id': 'ah3', 'redirect_uri': 'test.com',
                         'client_secret': 'uq8', 'code': 'acb'})
-            mock_session.close.called_once_with()
+            mock_session.close.assert_called_once_with()
         self.assertEqual(result, 'k4jw')
 
     async def test_access_token_mixcloud_instance(self):
@@ -137,7 +151,7 @@ class TestMixcloudOAuth(SyncedTestCase):
             {'redirect_uri': 'https://test.com/a',
              'client_secret': 'mm39d6fr'},
         ]
-        with patch('aiohttp.ClientSession.get'):
+        with patch('aiohttp.ClientSession.get', autospec=True):
             for params in values:
                 auth = MixcloudOAuth(**params)
                 with self.assertRaises(AssertionError):
@@ -150,7 +164,7 @@ class TestMixcloudOAuth(SyncedTestCase):
         """
         auth = MixcloudOAuth(client_id='jvs',
                              redirect_uri='abc.com', client_secret='4k9')
-        with patch('aiohttp.ClientSession') as MockSession:
+        with patch('aiohttp.ClientSession', autospec=True) as MockSession:
             async def coroutine():
                 """Do not include an access token in return value,
                 after supposedly failed OAuth transaction.
@@ -188,7 +202,7 @@ class TestMixcloudOAuth(SyncedTestCase):
         """
         auth = MixcloudOAuth(client_id='e8f', redirect_uri='foo.net',
                              client_secret='cc7', raise_exceptions=False)
-        with patch('aiohttp.ClientSession') as MockSession:
+        with patch('aiohttp.ClientSession', autospec=True) as MockSession:
             async def coroutine():
                 """Do not include an access token in return value,
                 after supposedly failed OAuth transaction.
