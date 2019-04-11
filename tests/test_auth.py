@@ -37,9 +37,9 @@ class TestMixcloudOAuth(SyncedTestCase):
     """Test `MixcloudOAuth`."""
 
     def test_authorization_url_arguments(self):
-        """`MixcloudOAuth`'s `authorization_url` property must return
-        the correct result when `client_id` and `redirect_uri` are
-        passed as arguments during instantiation.
+        """`MixcloudOAuth.authorization_url` must return the correct
+        result when `client_id` and `redirect_uri` are passed as
+        arguments during instantiation.
         """
         client_id = 'dk3054ha'
         redirect_uri = 'http://foo.com/code/'
@@ -50,9 +50,9 @@ class TestMixcloudOAuth(SyncedTestCase):
             f'&redirect_uri={redirect_uri}')
 
     def test_authorization_url_set_attributes(self):
-        """`MixcloudOAuth`'s `authorization_url` property must return
-        the correct result when `client_id` and `redirect_uri` are
-        set after instantiation.
+        """`MixcloudOAuth.authorization_url` must return the correct
+        result when `client_id` and `redirect_uri` are set after
+        instantiation.
         """
         client_id = 'o40dk309c'
         redirect_uri = 'https://example.com/store'
@@ -65,9 +65,8 @@ class TestMixcloudOAuth(SyncedTestCase):
             f'&redirect_uri={redirect_uri}')
 
     def test_authorization_url_custom_root(self):
-        """`MixcloudOAuth`'s `authorization_url` property must return
-        the correct result when passing a custom `oauth_root` during
-        instantiation.
+        """`MixcloudOAuth.authorization_url` must return the correct
+        result when passing a custom `oauth_root` during instantiation.
         """
         oauth_root = 'https://mixcloud.com/auth/'
         client_id = '0suf43kj'
@@ -80,8 +79,8 @@ class TestMixcloudOAuth(SyncedTestCase):
             f'&redirect_uri={redirect_uri}')
 
     def test_authorization_url_invalid(self):
-        """`MixcloudOAuth`'s `authorization_url` property must raise
-        AssertionError when `client_id` or `redirect_uri` is not set.
+        """`MixcloudOAuth.authorization_url` must raise AssertionError
+        when `client_id` or `redirect_uri` is not set.
         """
         values = [
             {'client_id': 'ar0495jd1w'},
@@ -93,8 +92,8 @@ class TestMixcloudOAuth(SyncedTestCase):
                 auth.authorization_url
 
     async def test_access_token(self):
-        """`MixcloudOAuth`'s `access_token` method must return an
-        access token after having sent a valid OAuth code.
+        """`MixcloudOAuth.access_token` must return an access token
+        after having sent a valid OAuth code.
         """
         auth = MixcloudOAuth(client_id='ah3',
                              redirect_uri='test.com', client_secret='uq8')
@@ -116,9 +115,9 @@ class TestMixcloudOAuth(SyncedTestCase):
         self.assertEqual(result, 'k4jw')
 
     async def test_access_token_mixcloud_instance(self):
-        """`MixcloudOAuth`'s `access_token` method must return an
-        access token using the stored Mixcloud instance when there is
-        one available, after having sent a valid OAuth code.
+        """`MixcloudOAuth.access_token` must return an access token
+        using the stored Mixcloud instance when there is one available,
+        after having sent a valid OAuth code.
         """
         async def coroutine():
             """Return an access token after supposedly successful
@@ -139,9 +138,8 @@ class TestMixcloudOAuth(SyncedTestCase):
         self.assertEqual(result, 'j39m')
 
     async def test_access_token_invalid(self):
-        """`MixcloudOAuth`'s `access_token` method must raise
-        AssertionError when `client_id`, `redirect_uri` or
-        `client_secret` is not set.
+        """`MixcloudOAuth.access_token` must raise AssertionError when
+        `client_id`, `redirect_uri` or `client_secret` is not set.
         """
         values = [
             {'client_id': 'mm39d6fr',
@@ -158,8 +156,8 @@ class TestMixcloudOAuth(SyncedTestCase):
                     await auth.access_token('foo')
 
     async def test_access_token_failure(self):
-        """`MixcloudOAuth`'s `access_token` method must return None
-        when authorization fails and both `self._raise_exceptions` and
+        """`MixcloudOAuth.access_token` must return None when
+        authorization fails and both `self._raise_exceptions` and
         `self.mixcloud` are None.
         """
         auth = MixcloudOAuth(client_id='jvs',
@@ -177,9 +175,8 @@ class TestMixcloudOAuth(SyncedTestCase):
         self.assertIsNone(result)
 
     async def test_access_token_failure_raise_exception(self):
-        """`MixcloudOAuth`'s `access_token` method must raise
-        MixcloudOAuthError when authorization fails and
-        `self._raise_exceptions` is True.
+        """`MixcloudOAuth.access_token` must raise MixcloudOAuthError
+        when authorization fails and `self._raise_exceptions` is True.
         """
         async def coroutine():
             """Do not include an access token in return value,
@@ -197,8 +194,8 @@ class TestMixcloudOAuth(SyncedTestCase):
             await auth.access_token('hvr')
 
     async def test_access_token_failure_raise_exception_false(self):
-        """`MixcloudOAuth`'s `access_token` method must return None
-        when authorization fails and`self._raise_exceptions` is False.
+        """`MixcloudOAuth.access_token` must return None when
+        authorization fails and`self._raise_exceptions` is False.
         """
         auth = MixcloudOAuth(client_id='e8f', redirect_uri='foo.net',
                              client_secret='cc7', raise_exceptions=False)
@@ -215,10 +212,9 @@ class TestMixcloudOAuth(SyncedTestCase):
         self.assertIsNone(result)
 
     async def test_access_token_failure_mixcloud_raise_exception(self):
-        """`MixcloudOAuth`'s `access_token` method must raise
-        MixcloudOAuthError when authorization fails and
-        `self._raise_exceptions` is None and
-        `self.mixcloud._raise_exceptions is True.
+        """`MixcloudOAuth.access_token` must raise MixcloudOAuthError
+        when authorization fails and `self._raise_exceptions` is None
+        and `self.mixcloud._raise_exceptions is True.
         """
         async def coroutine():
             """Do not include an access token in return value,

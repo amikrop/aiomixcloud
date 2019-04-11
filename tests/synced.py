@@ -1,19 +1,20 @@
 import asyncio
-import unittest
 from functools import wraps
+
+from tests.verbose import VerboseTestCase
 
 
 def _synced(method):
     """Return a blocking version of coroutine `method`."""
     @wraps(method)
-    def wrapper(*args):
+    def wrapper(*args, **kwargs):
         """Wait for coroutine `method` to complete."""
         loop = asyncio.get_event_loop()
-        loop.run_until_complete(method(*args))
+        loop.run_until_complete(method(*args, **kwargs))
     return wrapper
 
 
-class SyncedTestCase(unittest.TestCase):
+class SyncedTestCase(VerboseTestCase):
     """Testcase with all of its coroutine methods turned into
     synchronous (i.e blocking) methods.
     """

@@ -1,9 +1,10 @@
-import unittest
 from datetime import datetime, timezone
 
 from dateutil.tz import tzlocal
 
 from aiomixcloud.datetime import _to_datetime, format_datetime, to_timestamp
+
+from tests.verbose import VerboseTestCase
 
 
 def naive_to_utc(dt):
@@ -14,7 +15,7 @@ def naive_to_utc(dt):
     return aware_local.astimezone(timezone.utc)
 
 
-class TestDatetime(unittest.TestCase):
+class TestDatetime(VerboseTestCase):
     """Test datetime functions."""
 
     def test_to_datetime_datetime(self):

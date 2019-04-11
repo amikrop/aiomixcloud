@@ -1,5 +1,4 @@
 import json
-import unittest
 from collections import UserDict, UserList
 from pathlib import Path
 from unittest.mock import Mock
@@ -9,6 +8,7 @@ from aiomixcloud.models import AccessDict, AccessList, \
                                Resource, ResourceList, _WrapMixin
 
 from tests.synced import SyncedTestCase
+from tests.verbose import VerboseTestCase
 
 
 class MixcloudTestCaseMixin:
@@ -19,7 +19,7 @@ class MixcloudTestCaseMixin:
         self.mixcloud = Mock(_resource_class=Resource)
 
 
-class MixcloudTestCase(MixcloudTestCaseMixin, unittest.TestCase):
+class MixcloudTestCase(MixcloudTestCaseMixin, VerboseTestCase):
     """Testcase with a mock Mixcloud instance available."""
 
 
@@ -301,8 +301,8 @@ class TestResource(MixcloudSyncedTestCase):
             self.assertEqual(resource_list.data, expected_resource_list.data)
 
     async def test_load(self):
-        """`Resource`'s `load` method must load all the available data,
-        mark self as "full" and return it.
+        """`Resource.load` must load all the available data, mark self
+        as "full" and return it.
         """
         async def mock_get():
             """Return a `Resource` with more data, marked as "full"."""
@@ -323,8 +323,8 @@ class TestResource(MixcloudSyncedTestCase):
         self.assertIs(result, resource)
 
     async def test_load_full(self):
-        """`Resource`'s `load` method must not load any data anew
-        if `Resource` is already "full", unless `force` is set.
+        """`Resource.load` must not load any data anew if `Resource` is
+        already "full", unless `force` is set.
         """
         resource = Resource(self.data, full=True, mixcloud=self.mixcloud)
 
@@ -432,14 +432,14 @@ class TestResourceList(MixcloudSyncedTestCase):
         self.assertEqual(result.data, self.resource_list.data)
 
     def test_previous(self):
-        """`ResourceList`'s `previous` method must return a
-        `ResourceList` containing data from the previous page.
+        """`ResourceList.previous` must return a `ResourceList`
+        containing data from the previous page.
         """
         self.check_navigation('previous')
 
     def test_next(self):
-        """`ResourceList`'s `next` method must return a
-        `ResourceList` containing data from the next page.
+        """`ResourceList.next` must return a `ResourceList` containing
+        data from the next page.
         """
         self.check_navigation('next')
 
@@ -455,13 +455,13 @@ class TestResourceList(MixcloudSyncedTestCase):
         self.assertIsNone(result)
 
     def test_previous_missing(self):
-        """Check that `ResourceList`'s `previous` method returns
-        None when the "previous" navigation URL is missing.
+        """Check that `ResourceList.previous` returns None when the
+        "previous" navigation URL is missing.
         """
         self.check_navigation_missing('previous')
 
     def test_next_missing(self):
-        """Check that `ResourceList`'s `next` method returns
-        None when the "next" navigation URL is missing.
+        """Check that `ResourceList.next` returns None when the "next"
+        navigation URL is missing.
         """
         self.check_navigation_missing('next')

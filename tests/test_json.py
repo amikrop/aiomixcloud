@@ -1,11 +1,12 @@
-import unittest
 from datetime import datetime, timezone
 from pathlib import Path
 
 from aiomixcloud.json import MixcloudJSONDecoder
 
+from tests.verbose import VerboseTestCase
 
-class TestMixcloudJSONDecoder(unittest.TestCase):
+
+class TestMixcloudJSONDecoder(VerboseTestCase):
     """Test `MixcloudJSONDecoder`."""
 
     @classmethod
