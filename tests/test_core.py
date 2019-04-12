@@ -53,6 +53,7 @@ class TestMixcloud(SyncedTestCase):
     def setUpClass(cls):
         """Store test data and create and store patcher."""
         cls.url_values = [
+            ('', ''),
             ('test', 'test'),
             ('testing/', 'testing/'),
             ('/url', 'url'),
@@ -64,7 +65,15 @@ class TestMixcloud(SyncedTestCase):
         ]
         cls.sample_dict = {'username': 'john',
                            'key': '/john/', 'type': 'user'}
+        cls.error_dict = {'error': {'message': 'baz'}}
         cls.patcher = patch('aiohttp.ClientSession', autospec=True)
+
+    def configure_session_method(self, method):
+        """Configure `method` to return an asynchronous context
+        manager and return its `__aenter__` value.
+        """
+        method.return_value = AsyncContextManagerMock()
+        return method.return_value.aenter
 
     def setUp(self):
         """Start patcher, store mocked session object, store result of
@@ -77,8 +86,8 @@ class TestMixcloud(SyncedTestCase):
         mock_session_class = self.patcher.start()
 
         self.mock_session = mock_session_class.return_value
-        self.mock_session.get.return_value = AsyncContextManagerMock()
-        self.response_get = self.mock_session.get.return_value.aenter
+        self.response_get = self.configure_session_method(
+            self.mock_session.get)
         self.mock_session.close = coroutine
 
         self.mixcloud = Mixcloud()
@@ -208,7 +217,7 @@ class TestMixcloud(SyncedTestCase):
         @self.configure_get_json
         async def coroutine():
             """Return mock `_process_result`'s expected result."""
-            return {'error': {'message': 'baz'}}
+            return self.error_dict
 
         async with Mixcloud(raise_exceptions=True) as mixcloud:
             with self.assertRaises(MixcloudError):
@@ -316,3 +325,119 @@ class TestMixcloud(SyncedTestCase):
         self.mixcloud.get.assert_called_once_with(
             'search', q='foo', type='cloudcast', offset=90, limit=45)
         return result
+
+    def prepare_process_response(self, value):
+        """Configure and store mock `_process_response`."""
+        async def coroutine():
+            """Return result or mock `_process_response`."""
+            return value
+
+        self.mock_process_response = self.mixcloud._process_response = Mock()
+        self.mock_process_response.return_value = coroutine()
+
+    async def check_native_result(self, value, expected):
+        """Check that `_native_result` goes through `_process_response`
+        and returns an `AccessDict` of expected data.
+        """
+        self.prepare_process_response(value)
+        result = await self.mixcloud._native_result('response')
+
+        self.mock_process_response.assert_called_once_with('response')
+        self.assertIsInstance(result, AccessDict)
+        self.assertEqual(result.data, expected)
+
+    check_native_result._async = True
+
+    async def test_native_result(self):
+        """`Mixcloud._native_result` must, under normal circumstances,
+        return an `AccessDict` of received data.
+        """
+        await self.check_native_result(self.sample_dict, self.sample_dict)
+
+    async def test_native_result_none(self):
+        """`Mixcloud._native_result` must return an empty `AccessDict`
+        if received None.
+        """
+        await self.check_native_result(None, {})
+
+    async def test_native_result_error(self):
+        """`Mixcloud._native_result` must return an `AccessDict` of
+        received data, if received a dict with an 'error' key and
+        `_raise_exceptions` is False.
+        """
+        await self.check_native_result(self.error_dict, self.error_dict)
+
+    async def test_native_result_error_raise_exception(self):
+        """`Mixcloud._native_result` must raise MixcloudError if
+        received a dict with an 'error' key and `_raise_exceptions`
+        is True.
+        """
+        self.prepare_process_response(self.error_dict)
+        self.mixcloud._raise_exceptions = True
+
+        with self.assertRaises(MixcloudError):
+            await self.mixcloud._native_result('response')
+        self.mock_process_response.assert_called_once_with('response')
+
+    async def test_do_action(self):
+        """`Mixcloud._do_action` must, under normal circumstances,
+        make the specified HTTP method request and return an
+        `AccessDict` of received data.
+        """
+        methods = ['post', 'delete']
+        for method_name in methods:
+            async def coroutine():
+                """Return sample `AccessDict`."""
+                return AccessDict(self.sample_dict, mixcloud=self.mixcloud)
+
+            method = getattr(self.mock_session, method_name)
+            response = self.configure_session_method(method)
+            self.mixcloud.access_token = '6he8'
+
+            mock_native_result = self.mixcloud._native_result = Mock()
+            mock_native_result.return_value = coroutine()
+            result = await self.mixcloud._do_action(
+                'nick/mymix', 'favorite', method_name)
+            expected_url = urljoin(self.mixcloud._api_root,
+                                   'nick/mymix/favorite/?access_token=6he8')
+
+            method.assert_called_once_with(yarl.URL(expected_url))
+            mock_native_result.assert_called_once_with(response)
+            self.assertIsInstance(result, AccessDict)
+            self.assertEqual(result.data, self.sample_dict)
+
+    async def test_do_action_failure(self):
+        """`Mixcloud._do_action` must raise AssertionError when
+        `access_token` is not set.
+        """
+        with self.assertRaises(AssertionError):
+            await self.mixcloud._do_action('foo', 'follow', 'post')
+
+    async def check_make_action(self, method_name):
+        """Check that `Mixcloud`'s HTTP `method` request about some
+        action works corectly.
+        """
+        async def coroutine():
+            """Return sample `AccessDict`."""
+            return AccessDict(self.sample_dict, mixcloud=self.mixcloud)
+
+        mock_do_action = self.mixcloud._do_action = Mock()
+        mock_do_action.return_value = coroutine()
+        method = getattr(self.mixcloud, f'_{method_name}_action')
+        result = await method('foo', 'follow')
+
+        mock_do_action.assert_called_once_with('foo', 'follow', method_name)
+        self.assertIsInstance(result, AccessDict)
+        self.assertEqual(result.data, self.sample_dict)
+
+    def test_post_action(self):
+        """`Mixlcoud._post_action` must make an HTTP POST request
+        about some action.
+        """
+        self.check_make_action('post')
+
+    def test_delete_action(self):
+        """`Mixlcoud._post_action` must make an HTTP DELETE request
+        about some action.
+        """
+        self.check_make_action('delete')

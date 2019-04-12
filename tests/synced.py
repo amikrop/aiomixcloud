@@ -24,5 +24,6 @@ class SyncedTestCase(VerboseTestCase):
         super().__init__(*args)
         for name in dir(self):
             attribute = getattr(self, name)
-            if asyncio.iscoroutinefunction(attribute):
+            if (asyncio.iscoroutinefunction(attribute)
+                    and not hasattr(attribute, '_async')):
                 setattr(self, name, _synced(attribute))
