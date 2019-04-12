@@ -335,6 +335,13 @@ class TestMixcloud(SyncedTestCase):
         self.mock_process_response = self.mixcloud._process_response = Mock()
         self.mock_process_response.return_value = coroutine()
 
+    def assert_access_dict_equal(self, value, expected):
+        """Assert that `value` is an `AccessDict` with its `data`
+        attribute equal to `expected`.
+        """
+        self.assertIsInstance(value, AccessDict)
+        self.assertEqual(value.data, expected)
+
     async def check_native_result(self, value, expected):
         """Check that `_native_result` goes through `_process_response`
         and returns an `AccessDict` of expected data.
@@ -343,8 +350,7 @@ class TestMixcloud(SyncedTestCase):
         result = await self.mixcloud._native_result('response')
 
         self.mock_process_response.assert_called_once_with('response')
-        self.assertIsInstance(result, AccessDict)
-        self.assertEqual(result.data, expected)
+        self.assert_access_dict_equal(result, expected)
 
     check_native_result._async = True
 
@@ -403,8 +409,7 @@ class TestMixcloud(SyncedTestCase):
 
             method.assert_called_once_with(yarl.URL(expected_url))
             mock_native_result.assert_called_once_with(response)
-            self.assertIsInstance(result, AccessDict)
-            self.assertEqual(result.data, self.sample_dict)
+            self.assert_access_dict_equal(result, self.sample_dict)
 
     async def test_do_action_failure(self):
         """`Mixcloud._do_action` must raise AssertionError when
@@ -427,8 +432,7 @@ class TestMixcloud(SyncedTestCase):
         result = await method('foo', 'follow')
 
         mock_do_action.assert_called_once_with('foo', 'follow', method_name)
-        self.assertIsInstance(result, AccessDict)
-        self.assertEqual(result.data, self.sample_dict)
+        self.assert_access_dict_equal(result, self.sample_dict)
 
     def test_post_action(self):
         """`Mixlcoud._post_action` must make an HTTP POST request
@@ -441,3 +445,85 @@ class TestMixcloud(SyncedTestCase):
         about some action.
         """
         self.check_make_action('delete')
+
+    async def check_specific_action(self, method_name, action_name):
+        """Check that `Mixcloud`'s action method `method_name` about
+        action `action_name` works correctly.
+        """
+        async def coroutine():
+            """Return sample `AccessDict`."""
+            return AccessDict(self.sample_dict, mixcloud=self.mixcloud)
+
+        attribute = f'_{method_name}_action'
+        setattr(self.mixcloud, attribute, Mock())
+        mock_method = getattr(self.mixcloud, attribute)
+        mock_method.return_value = coroutine()
+        action = getattr(self.mixcloud, action_name)
+        result = await action('test')
+
+        if method_name == 'delete':
+            action_name = action_name[2:]
+        action_name = action_name.replace('_', '-')
+
+        mock_method.assert_called_once_with('test', action_name)
+        self.assert_access_dict_equal(result, self.sample_dict)
+
+    def check_post_action(self, action_name):
+        """Check that `Mixcloud`'s action POST method about action
+        `action_name` works correctly.
+        """
+        self.check_specific_action('post', action_name)
+
+    def check_delete_action(self, action_name):
+        """Check that `Mixcloud`'s action DELETE method about action
+        `action_name` works correctly.
+        """
+        self.check_specific_action('delete', f'un{action_name}')
+
+    def test_follow(self):
+        """`Mixcloud.follow` must return `Mixcloud._post_action`
+        called with 'follow'.
+        """
+        self.check_post_action('follow')
+
+    def test_favorite(self):
+        """`Mixcloud.favorite` must return `Mixcloud._post_action`
+        called with 'favorite'.
+        """
+        self.check_post_action('favorite')
+
+    def test_repost(self):
+        """`Mixcloud.repost` must return `Mixcloud._post_action`
+        called with 'repost'.
+        """
+        self.check_post_action('repost')
+
+    def test_listen_later(self):
+        """`Mixcloud.listen_later` must return `Mixcloud._post_action`
+        called with 'listen-later'.
+        """
+        self.check_post_action('listen_later')
+
+    def test_unfollow(self):
+        """`Mixcloud.unfollow` must return `Mixcloud._delete_action`
+        called with 'follow'.
+        """
+        self.check_delete_action('follow')
+
+    def test_unfavorite(self):
+        """`Mixcloud.unfavorite` must return `Mixcloud._delete_action`
+        called with 'favorite'.
+        """
+        self.check_delete_action('favorite')
+
+    def test_unrepost(self):
+        """`Mixcloud.unrepost` must return `Mixcloud._delete_action`
+        called with 'repost'.
+        """
+        self.check_delete_action('repost')
+
+    def test_unlisten_later(self):
+        """`Mixcloud.unlisten_later` must return
+        `Mixcloud._delete_action` called with 'listen-later'.
+        """
+        self.check_delete_action('listen_later')
