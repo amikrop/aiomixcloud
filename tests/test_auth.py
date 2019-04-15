@@ -1,4 +1,4 @@
-from unittest.mock import MagicMock, patch
+from unittest.mock import Mock, patch
 
 import yarl
 
@@ -27,7 +27,7 @@ def make_mock_mixcloud(coroutine):
     """Return a mock mixcloud object with asynchronous context
     management behavior specified by `coroutine`.
     """
-    mock = MagicMock()
+    mock = Mock()
     mock._session.get = AsyncContextManagerMock()
     mock._session.get.return_value.aenter.json.return_value = coroutine()
     return mock

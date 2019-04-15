@@ -329,7 +329,7 @@ class TestMixcloud(SyncedTestCase):
     def prepare_process_response(self, value):
         """Configure and store mock `_process_response`."""
         async def coroutine():
-            """Return result or mock `_process_response`."""
+            """Return result of mock `_process_response`."""
             return value
 
         self.mock_process_response = self.mixcloud._process_response = Mock()
@@ -527,3 +527,103 @@ class TestMixcloud(SyncedTestCase):
         `Mixcloud._delete_action` called with 'listen-later'.
         """
         self.check_delete_action('listen_later')
+
+    async def test_proper_result(self):
+        """`Mixcloud._proper_result` must call `_native_result` when
+        dealing with JSON data.
+        """
+        async def coroutine():
+            """Return sample `AccessDict`."""
+            return AccessDict(self.sample_dict, mixcloud=self.mixcloud)
+
+        mock_response = Mock()
+        mock_response.headers = {'content-type': 'application/javascript'}
+        mock_native_result = self.mixcloud._native_result = Mock()
+        mock_native_result.return_value = coroutine()
+        result = await self.mixcloud._proper_result(mock_response)
+
+        mock_native_result.assert_called_once_with(mock_response)
+        self.assert_access_dict_equal(result, self.sample_dict)
+
+    async def test_proper_result_text(self):
+        """`Mixcloud._proper_result` must call response's `text` method
+        when dealing with text data.
+        """
+        async def coroutine():
+            """Return sample text."""
+            return 'sample'
+
+        mock_response = Mock(headers={})
+        mock_response.text.return_value = coroutine()
+        result = await self.mixcloud._proper_result(mock_response)
+
+        mock_response.text.assert_called_once_with()
+        self.assertEqual(result, 'sample')
+
+    async def test_embed(self):
+        """`Mixcloud._embed` must go through `_session.get` of the
+        proper URL and call `_proper_result`.
+        """
+        async def coroutine():
+            """Return sample `AccessDict`."""
+            return AccessDict(self.sample_dict, mixcloud=self.mixcloud)
+
+        mock_proper_result = self.mixcloud._proper_result = Mock()
+        mock_proper_result.return_value = coroutine()
+        result = await self.mixcloud._embed('auser/amix', height=60)
+
+        url = urljoin(self.mixcloud._api_root, 'auser/amix/embed-json')
+        self.mock_session.get.assert_called_once_with(
+            yarl.URL(url), params={'height': 60})
+        self.assert_access_dict_equal(result, self.sample_dict)
+
+    async def test_embed_json(self):
+        """`Mixcloud.embed_json` must call `_embed` with format='json'
+        and any other arguments forwarded.
+        """
+        async def coroutine():
+            """Return sample `AccessDict`."""
+            return AccessDict(self.sample_dict, mixcloud=self.mixcloud)
+
+        mock_embed = self.mixcloud._embed = Mock()
+        mock_embed.return_value = coroutine()
+        result = await self.mixcloud.embed_json(width=250)
+
+        mock_embed.assert_called_once_with(format='json', width=250)
+        self.assert_access_dict_equal(result, self.sample_dict)
+
+    async def test_embed_html(self):
+        """`Mixcloud.embed_html` must call `_embed` with format='html'
+        and any other arguments forwarded.
+        """
+        async def coroutine():
+            """Return sample text."""
+            return 'test'
+
+        mock_embed = self.mixcloud._embed = Mock()
+        mock_embed.return_value = coroutine()
+        result = await self.mixcloud.embed_html(width=300)
+
+        mock_embed.assert_called_once_with(format='html', width=300)
+        self.assertEqual(result, 'test')
+
+    async def test_oembed(self):
+        """`Mixcloud._oembed` must go through `_session.get` of the
+        proper URL and call `_proper_result`.
+        """
+        xml = '<?xml version="1.0" encoding="utf-8"?><oembed>foo</oembed>'
+
+        async def coroutine():
+            """Return sample XML."""
+            return xml
+
+        mock_proper_result = self.mixcloud._proper_result = Mock()
+        mock_proper_result.return_value = coroutine()
+        result = await self.mixcloud.oembed(
+            'someuser/somemix', height=120, format='xml')
+
+        url = urljoin(self.mixcloud._mixcloud_root, 'someuser/somemix')
+        self.mock_session.get.assert_called_once_with(
+            self.mixcloud._oembed_root,
+            params={'url': url, 'height': 120, 'format': 'xml'})
+        self.assertEqual(result, xml)
