@@ -97,6 +97,19 @@ def paginated(coroutine):
     return wrapper
 
 
+def personal(coroutine):
+    """Return a coroutine method that checks if `access_token` is set
+    on `self`.
+    """
+    @wraps(coroutine)
+    async def wrapper(self, *args, **kwargs):
+        """Check that `self.access_token` is set."""
+        assert self.access_token is not None, 'access_token must be set'
+        return await coroutine(self, *args, **kwargs)
+
+    return wrapper
+
+
 def targeting(coroutine):
     """Mark `coroutine` as one that targets a specific resource,
     so it can be used as a :class:`~aiomixcloud.models.Resource`

@@ -4,7 +4,8 @@ from tempfile import NamedTemporaryFile
 
 from aiomixcloud.constants import DESCRIPTION_MAX_SIZE, \
                                   PICTURE_MAX_SIZE, TAG_MAX_COUNT
-from aiomixcloud.decorators import displayed, paginated, targeting, uploading
+from aiomixcloud.decorators import displayed, paginated, \
+                                   personal, targeting, uploading
 
 from tests.synced import SyncedTestCase
 
@@ -183,6 +184,26 @@ class TestPaginated(SyncedTestCase):
 
             self.assertEqual(result_since, expected_since)
             self.assertEqual(result_until, expected_until)
+
+
+class TestPersonal(SyncedTestCase):
+    """Test `personal`."""
+
+    class Test:
+        """Dummy class."""
+
+        access_token = None
+
+        @personal
+        async def method(self, foo, *, bar):
+            """Dummy coroutine method."""
+
+    async def test_personal(self):
+        """`personal` must raise AssertionError when
+        `self.access_token` is not set.
+        """
+        with self.assertRaises(AssertionError):
+            await self.Test().method(42, bar='test')
 
 
 class TestTargeting(unittest.TestCase):

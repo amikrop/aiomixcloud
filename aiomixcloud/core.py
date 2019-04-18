@@ -21,7 +21,8 @@ import yarl
 
 from aiomixcloud.constants import API_ROOT, MP3_MAX_SIZE, \
                                   MIXCLOUD_ROOT, OEMBED_ROOT
-from aiomixcloud.decorators import displayed, paginated, targeting, uploading
+from aiomixcloud.decorators import displayed, paginated, \
+                                   personal, targeting, uploading
 from aiomixcloud.exceptions import MixcloudError
 from aiomixcloud.json import MixcloudJSONDecoder
 from aiomixcloud.models import AccessDict, Resource, ResourceList
@@ -184,6 +185,7 @@ class Mixcloud:
             data, full=True,
             create_connections=create_connections, mixcloud=self)
 
+    @personal
     async def me(self):
         """Get information about user authorized by
         used access token.
@@ -230,11 +232,11 @@ class Mixcloud:
 
         return AccessDict(data, mixcloud=self)
 
+    @personal
     async def _do_action(self, url, action, method):
         """Make HTTP `method` request about `action`, to resource
         specified by `url` and return results.
         """
-        assert self.access_token is not None, 'access_token must be set'
         # API requires URLs to end in a slash, when dealing
         # with non-GET requests.
         action = f'{action}/'
@@ -374,7 +376,7 @@ class Mixcloud:
 
         # Add possibly existing tags.
         for i, tag in enumerate(tags):
-            data.add_field(f'tags-{i}-tag', str(tag))
+            data.add_field(f'tags-{i}-tag', tag)
 
         # Add possibly existing sections.
         for i, section in enumerate(sections):
@@ -391,6 +393,7 @@ class Mixcloud:
         return result
 
     @uploading
+    @personal
     async def upload(self, mp3, name, params):
         """Upload file with filename indicated by `mp3`, named `name`
         and described by specified parameters.
@@ -409,6 +412,7 @@ class Mixcloud:
 
     @targeting
     @uploading
+    @personal
     async def edit(self, key, params, *, name=None):
         """Edit upload identified by `key`, as described by
         specified parameters.
