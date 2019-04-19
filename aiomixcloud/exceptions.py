@@ -45,10 +45,11 @@ class MixcloudError(Exception):
         if extra:
             error_message.append(f'({extra})')
         if self.type:
+            type = self.type
             if error_message:
                 # If there are more parts than just `type`,
                 # append a colon to it.
-                type = f'{self.type}:'
+                type = f'{type}:'
             error_message.insert(0, type)
 
         return ' '.join(error_message)
