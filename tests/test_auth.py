@@ -1,36 +1,12 @@
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
 import yarl
 
 from aiomixcloud import MixcloudOAuthError
 from aiomixcloud.auth import MixcloudOAuth
 
-from tests.mock import AsyncContextManagerMock
+from tests.auth_helpers import configure_mock_session, make_mock_mixcloud
 from tests.synced import SyncedTestCase
-
-
-def configure_mock_session(mock_session_class, coroutine):
-    """Return a mock session object out of the `mock_session_class`
-    mock class, with proper asynchronous context management behavior.
-    """
-    async def close():
-        """Dumy coroutine function."""
-
-    mock_session = mock_session_class.return_value
-    mock_session.get = AsyncContextManagerMock()
-    mock_session.get.return_value.aenter.json.return_value = coroutine()
-    mock_session.close.return_value = close()
-    return mock_session
-
-
-def make_mock_mixcloud(coroutine):
-    """Return a mock mixcloud object with asynchronous context
-    management behavior specified by `coroutine`.
-    """
-    mock = Mock()
-    mock._session.get = AsyncContextManagerMock()
-    mock._session.get.return_value.aenter.json.return_value = coroutine()
-    return mock
 
 
 class TestMixcloudOAuth(SyncedTestCase):
@@ -157,8 +133,8 @@ class TestMixcloudOAuth(SyncedTestCase):
 
     async def test_access_token_failure(self):
         """`MixcloudOAuth.access_token` must return None when
-        authorization fails and both `self._raise_exceptions` and
-        `self.mixcloud` are None.
+        authorization fails and both `_raise_exceptions` and `mixcloud`
+        are None.
         """
         auth = MixcloudOAuth(client_id='jvs',
                              redirect_uri='abc.com', client_secret='4k9')
@@ -176,7 +152,7 @@ class TestMixcloudOAuth(SyncedTestCase):
 
     async def test_access_token_failure_raise_exception(self):
         """`MixcloudOAuth.access_token` must raise MixcloudOAuthError
-        when authorization fails and `self._raise_exceptions` is True.
+        when authorization fails and `_raise_exceptions` is True.
         """
         async def coroutine():
             """Do not include an access token in return value,
@@ -195,7 +171,7 @@ class TestMixcloudOAuth(SyncedTestCase):
 
     async def test_access_token_failure_raise_exception_false(self):
         """`MixcloudOAuth.access_token` must return None when
-        authorization fails and`self._raise_exceptions` is False.
+        authorization fails and `_raise_exceptions` is False.
         """
         auth = MixcloudOAuth(client_id='e8f', redirect_uri='foo.net',
                              client_secret='cc7', raise_exceptions=False)
@@ -213,8 +189,8 @@ class TestMixcloudOAuth(SyncedTestCase):
 
     async def test_access_token_failure_mixcloud_raise_exception(self):
         """`MixcloudOAuth.access_token` must raise MixcloudOAuthError
-        when authorization fails and `self._raise_exceptions` is None
-        and `self.mixcloud._raise_exceptions is True.
+        when authorization fails and `_raise_exceptions` is None and
+        `mixcloud._raise_exceptions` is True.
         """
         async def coroutine():
             """Do not include an access token in return value,

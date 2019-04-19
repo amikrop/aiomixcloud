@@ -37,11 +37,12 @@ def _make_sync(cls, **options):
             original object.
             """
             kwargs.update(options)
-            self._object = cls(*args, **kwargs)
+            self.__dict__['_object'] = cls(*args, **kwargs)
 
         def __getattr__(self, name):
-            """If attribute with given `name` is a coroutine, return a
-            synchronous version of it, else return original attribute.
+            """If attribute with given `name` is a coroutine function,
+            return a synchronous version of it, else return the
+            original attribute.
             """
             attribute = getattr(self._object, name)
             if asyncio.iscoroutinefunction(attribute):
@@ -54,6 +55,12 @@ def _make_sync(cls, **options):
                     return loop.run_until_complete(attribute(*args, **kwargs))
                 return sync_method
             return attribute
+
+        def __setattr__(self, name, value):
+            """Set attribute with given `name` equal to `value`,
+            on original object.
+            """
+            setattr(self._object, name, value)
 
         # Delegate special methods used by potential original objects.
         for name in ('getitem', 'iter', 'len', 'repr'):
