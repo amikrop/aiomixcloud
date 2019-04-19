@@ -10,7 +10,7 @@ def _synced(method):
     def wrapper(*args, **kwargs):
         """Wait for coroutine `method` to complete."""
         loop = asyncio.get_event_loop()
-        loop.run_until_complete(method(*args, **kwargs))
+        return loop.run_until_complete(method(*args, **kwargs))
     return wrapper
 
 
