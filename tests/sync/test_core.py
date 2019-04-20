@@ -36,9 +36,7 @@ class TestMixcloudSync(TestMixcloudMixin, VerboseTestCase):
     """Test `MixcloudSync`."""
 
     mixcloud_class = MixcloudSync
-
     resource_class = ResourceSync
-
     resource_list_class = ResourceListSync
 
     def test_pass_session(self):

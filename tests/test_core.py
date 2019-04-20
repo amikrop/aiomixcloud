@@ -35,9 +35,7 @@ class TestMixcloud(TestMixcloudMixin, SyncedTestCase):
     """Test `Mixcloud`."""
 
     mixcloud_class = Mixcloud
-
     resource_class = Resource
-
     resource_list_class = ResourceList
 
     async def test_pass_session(self):
