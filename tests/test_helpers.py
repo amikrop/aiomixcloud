@@ -1,45 +1,8 @@
 import asyncio
-import unittest
-from unittest.mock import Mock
 
-from tests.auth_helpers import configure_mock_session, make_mock_mixcloud
 from tests.mock import AsyncContextManagerMock
 from tests.synced import SyncedTestCase
 from tests.verbose import VerboseTestCase
-
-
-class TestAuthHelpers(SyncedTestCase):
-    """Test auth helpers."""
-
-    def setUp(self):
-        """Store test data."""
-        async def coroutine():
-            """Return a specific singleton value."""
-            return self.target
-
-        self.target = object()
-        self.coroutine = coroutine
-
-    async def test_configure_mock_session(self):
-        """`configure_mock_session` must return a mock session object
-        with proper asynchronous context management behavior.
-        """
-        mock_session = configure_mock_session(Mock(), self.coroutine)
-        async with mock_session.get() as response:
-            result = await response.json()
-        self.assertEqual(result, self.target)
-
-        result = await mock_session.close()
-        self.assertEqual(result, None)
-
-    async def test_make_mock_mixcloud(self):
-        """`make_mock_mixcloud` must return a mock mixcloud object
-        with proper asynchronous context management behavior.
-        """
-        mock_mixcloud = make_mock_mixcloud(self.coroutine)
-        async with mock_mixcloud._session.get() as response:
-            result = await response.json()
-        self.assertEqual(result, self.target)
 
 
 class TestAsyncContextManagerMock(SyncedTestCase):

@@ -19,7 +19,7 @@ class TestDisplayed(SyncedTestCase):
         called with none of the relative keyword arguments.
         """
         @displayed
-        async def coroutine(*args, params):
+        async def coroutine(_, *args, params):
             """Check that `params` contains the proper items
             according to the calls.
             """
@@ -27,8 +27,8 @@ class TestDisplayed(SyncedTestCase):
             params.pop('format')
             self.assertFalse(params)
 
-        await coroutine()
-        await coroutine('positional', 5)
+        await coroutine(None)
+        await coroutine(None, 'positional', 5)
 
     async def test_some(self):
         """`displayed` must call the decorated function with `params`
@@ -36,7 +36,7 @@ class TestDisplayed(SyncedTestCase):
         called with some of the relative keyword arguments.
         """
         @displayed
-        async def coroutine(*args, params):
+        async def coroutine(_, *args, params):
             """Check that `params` contains the proper items
             according to the calls.
             """
@@ -45,8 +45,8 @@ class TestDisplayed(SyncedTestCase):
                 params.pop(key)
             self.assertFalse(params)
 
-        await coroutine(format='html', height=60)
-        await coroutine('testing', False, 32, format='html', height=65)
+        await coroutine(None, format='html', height=60)
+        await coroutine(None, 'testing', False, 32, format='html', height=65)
 
     async def test_all(self):
         """`displayed` must call the decorated function with `params`
@@ -54,7 +54,7 @@ class TestDisplayed(SyncedTestCase):
         called with all the relative keyword arguments.
         """
         @displayed
-        async def coroutine(*args, params):
+        async def coroutine(_, *args, params):
             """Check that `params` contains the proper items
             according to the calls.
             """
@@ -63,8 +63,9 @@ class TestDisplayed(SyncedTestCase):
                 params.pop(key)
             self.assertFalse(params)
 
-        await coroutine(format='html', width=100, height=50, color='f4cb42')
-        await coroutine('test', -4, [],
+        await coroutine(None, format='html',
+                        width=100, height=50, color='f4cb42')
+        await coroutine(None, 'test', -4, [],
                         format='html', width=110, height=55, color='9bf441')
 
     async def test_extra(self):
@@ -72,13 +73,13 @@ class TestDisplayed(SyncedTestCase):
         when called with non-existent keyword arguments.
         """
         @displayed
-        async def coroutine(*args, params):
+        async def coroutine(_, *args, params):
             """Dummy coroutine function."""
 
         with self.assertRaises(TypeError):
-            await coroutine(nonexistent=9)
+            await coroutine(None, nonexistent=9)
         with self.assertRaises(TypeError):
-            await coroutine(5, True, missing='a')
+            await coroutine(None, 5, True, missing='a')
 
 
 class TestPaginated(SyncedTestCase):
@@ -90,15 +91,15 @@ class TestPaginated(SyncedTestCase):
         arguments.
         """
         @paginated
-        async def coroutine(*args, params, **kwargs):
+        async def coroutine(_, *args, params, **kwargs):
             """Check that `params` contains the proper items
             according to the calls.
             """
             self.assertFalse(params)
 
-        await coroutine()
-        await coroutine('foo', {3: 'bc'}, None)
-        await coroutine(42, 'a', some_keyword=3, baz=False)
+        await coroutine(None)
+        await coroutine(None, 'foo', {3: 'bc'}, None)
+        await coroutine(None, 42, 'a', some_keyword=3, baz=False)
 
     async def test_some(self):
         """`paginated` must call the decorated function with `params`
@@ -106,7 +107,7 @@ class TestPaginated(SyncedTestCase):
         called with some of the relative keyword arguments.
         """
         @paginated
-        async def coroutine(*args, params, **kwargs):
+        async def coroutine(_, *args, params, **kwargs):
             """Check that `params` contains the proper items
             according to the calls.
             """
@@ -115,11 +116,11 @@ class TestPaginated(SyncedTestCase):
                 params.pop(key)
             self.assertFalse(params)
 
-        await coroutine(since=39847202, until=39852219)
-        await coroutine(since='03/09/2017', until='03/10/2017', extra=8)
-        await coroutine(True, 'baz', -1, (2, False),
+        await coroutine(None, since=39847202, until=39852219)
+        await coroutine(None, since='03/09/2017', until='03/10/2017', extra=8)
+        await coroutine(None, True, 'baz', -1, (2, False),
                         since=892402130, until=892450038)
-        await coroutine(4, 'test', since='11/09/2018',
+        await coroutine(None, 4, 'test', since='11/09/2018',
                         until='12/09/2018', foo='bar', keyword=12)
 
     async def test_invalid(self):
@@ -128,18 +129,18 @@ class TestPaginated(SyncedTestCase):
         ['offset', 'limit', 'since', 'until'].
         """
         @paginated
-        async def coroutine(params):
+        async def coroutine(_, params):
             """Dummy coroutine function."""
 
         with self.assertRaises(AssertionError):
-            await coroutine(page=3, limit=90)
+            await coroutine(None, page=3, limit=90)
 
     async def test_threshold_calculation(self):
         """`paginated` must calculate `params`'s 'offset'
         and 'limit' items, out of 'page'.
         """
         @paginated
-        async def coroutine(params):
+        async def coroutine(_, params):
             """Return the 'offset' and 'limit' items of `params`."""
             return params['offset'], params['limit']
 
@@ -156,7 +157,7 @@ class TestPaginated(SyncedTestCase):
             params = {'page': page}
             if per_page is not None:
                 params['per_page'] = per_page
-            result_offset, result_limit = await coroutine(**params)
+            result_offset, result_limit = await coroutine(None, **params)
 
             self.assertEqual(result_offset, offset)
             self.assertEqual(result_limit, limit)
@@ -166,7 +167,7 @@ class TestPaginated(SyncedTestCase):
         and 'until' items to UNIX timestamps.
         """
         @paginated
-        async def coroutine(params):
+        async def coroutine(_, params):
             """Return the 'since' and 'until' items of `params`."""
             return params['since'], params['until']
 
@@ -180,7 +181,7 @@ class TestPaginated(SyncedTestCase):
         ]
         for since, until, expected_since, expected_until in values:
             result_since, result_until = await coroutine(
-                since=since, until=until)
+                None, since=since, until=until)
 
             self.assertEqual(result_since, expected_since)
             self.assertEqual(result_until, expected_until)
@@ -230,15 +231,15 @@ class TestUploading(SyncedTestCase):
         arguments.
         """
         @uploading
-        async def coroutine(*args, params, **kwargs):
+        async def coroutine(_, *args, params, **kwargs):
             """Check that `params` contains the proper items
             according to the calls.
             """
             self.assertFalse(params)
 
-        await coroutine()
-        await coroutine(-14, False, 'foo')
-        await coroutine('hello', keyword_argument=3, another_one='bar')
+        await coroutine(None)
+        await coroutine(None, -14, False, 'foo')
+        await coroutine(None, 'hello', keyword_argument=3, another_one='bar')
 
     async def test_some(self):
         """`uploading` must call the decorated function with `params`
@@ -248,7 +249,7 @@ class TestUploading(SyncedTestCase):
         passed if False.
         """
         @uploading
-        async def coroutine(*args, params, **kwargs):
+        async def coroutine(_, *args, params, **kwargs):
             """Return `params`."""
             return params
 
@@ -267,7 +268,7 @@ class TestUploading(SyncedTestCase):
              {'section': [{'baz': 'test'}]}, {'sections': [{'a': 'b'}]}),
         ]
         for args, params, kwargs, expected in values:
-            result = await coroutine(*args, **{**params, **kwargs})
+            result = await coroutine(None, *args, **{**params, **kwargs})
             self.assertEqual(result, expected)
 
     async def test_picture(self):
@@ -277,14 +278,14 @@ class TestUploading(SyncedTestCase):
         size.
         """
         @uploading
-        async def coroutine(params):
+        async def coroutine(_, params):
             """Return the 'picture' item of `params`."""
             return params['picture']
 
         with NamedTemporaryFile() as f:
             f.write(b'\x00' * PICTURE_MAX_SIZE)
             name = f.name
-            result = await coroutine(picture=name)
+            result = await coroutine(None, picture=name)
         self.assertEqual(result, name)
 
     async def test_picture_invalid(self):
@@ -293,13 +294,13 @@ class TestUploading(SyncedTestCase):
         with size greater than the maximum allowed.
         """
         @uploading
-        async def coroutine(params):
+        async def coroutine(_, params):
             """Dummy coroutine function."""
 
         with NamedTemporaryFile() as f:
             f.write(b'\x00' * (PICTURE_MAX_SIZE + 1))
             with self.assertRaises(AssertionError):
-                await coroutine(picture=f.name)
+                await coroutine(None, picture=f.name)
 
     async def test_description(self):
         """`uploading` must call the decorated function with `params`'s
@@ -308,12 +309,12 @@ class TestUploading(SyncedTestCase):
         size.
         """
         @uploading
-        async def coroutine(params):
+        async def coroutine(_, params):
             """Return the 'description' item of `params`."""
             return params['description']
 
         description = 'a' * DESCRIPTION_MAX_SIZE
-        result = await coroutine(description=description)
+        result = await coroutine(None, description=description)
         self.assertEqual(result, description)
 
     async def test_description_invalid(self):
@@ -322,12 +323,12 @@ class TestUploading(SyncedTestCase):
         maximum allowed.
         """
         @uploading
-        async def coroutine(params):
+        async def coroutine(_, params):
             """Dummy coroutine function."""
 
         description = 'a' * (DESCRIPTION_MAX_SIZE + 1)
         with self.assertRaises(AssertionError):
-            await coroutine(description=description)
+            await coroutine(None, description=description)
 
     async def test_tags(self):
         """`uploading` must call the decorated function with `params`'s
@@ -336,12 +337,12 @@ class TestUploading(SyncedTestCase):
         length.
         """
         @uploading
-        async def coroutine(params):
+        async def coroutine(_, params):
             """Return the 'tags' item of `params`."""
             return params['tags']
 
         tags = ['sometag'] * TAG_MAX_COUNT
-        result = await coroutine(tags=tags)
+        result = await coroutine(None, tags=tags)
         self.assertEqual(result, tags)
 
     async def test_tags_invalid(self):
@@ -350,19 +351,19 @@ class TestUploading(SyncedTestCase):
         allowed.
         """
         @uploading
-        async def coroutine(params):
+        async def coroutine(_, params):
             """Dummy coroutine function."""
 
         tags = ['sometag'] * (TAG_MAX_COUNT + 1)
         with self.assertRaises(AssertionError):
-            await coroutine(tags=tags)
+            await coroutine(None, tags=tags)
 
     async def test_datetime_conversion(self):
         """`uploading` must convert `params`'s 'publish_date' item to a
         datetime string in the "YYYY-MM-DDTHH:MM:SSZ" format.
         """
         @uploading
-        async def coroutine(params):
+        async def coroutine(_, params):
             """Return the 'publish_date' item of `params`."""
             return params['publish_date']
 
@@ -373,5 +374,5 @@ class TestUploading(SyncedTestCase):
             ('2020, Sept 3, 00:03:00 UTC', '2020-09-03T00:03:00Z'),
         ]
         for value, expected in values:
-            result = await coroutine(publish_date=value)
+            result = await coroutine(None, publish_date=value)
             self.assertEqual(result, expected)

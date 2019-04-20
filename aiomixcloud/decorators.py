@@ -13,6 +13,10 @@ Specifically:
       defining the proper arguments, checking their validity and
       passing a `dict` produced out of them to the decorated coroutine.
 
+    - :func:`personal`, checking that `access_token` is set on the
+      object which owns the decorated coroutine method, before awaiting
+      it.
+
     - :func:`targeting`, marking the decorated coroutine as one that
       targets a specific resource identified by a key, making said
       coroutine available as a :class:`~aiomixcloud.models.Resource`
@@ -38,7 +42,7 @@ def displayed(coroutine):
     coroutine, while awaiting it.
     """
     @wraps(coroutine)
-    async def wrapper(*args, format='json',
+    async def wrapper(self, *args, format='json',
                       width=None, height=None, color=None):
         """Pass the non-None arguments to the wrapped coroutine,
         as a dictionary.
@@ -51,7 +55,7 @@ def displayed(coroutine):
         if color is not None:
             params['color'] = color
 
-        return await coroutine(*args, params=params)
+        return await coroutine(self, *args, params=params)
 
     return wrapper
 
@@ -63,7 +67,7 @@ def paginated(coroutine):
     awaiting it.
     """
     @wraps(coroutine)
-    async def wrapper(*args, offset=None, limit=None, since=None,
+    async def wrapper(self, *args, offset=None, limit=None, since=None,
                       until=None, page=None, per_page=20, **kwargs):
         """Check that `page` is not specified simultaneously with any
         of the API arguments (`offset`, `limit`, `since` and `until`).
@@ -92,7 +96,7 @@ def paginated(coroutine):
         if until is not None:
             params['until'] = to_timestamp(until)
 
-        return await coroutine(*args, params=params, **kwargs)
+        return await coroutine(self, *args, params=params, **kwargs)
 
     return wrapper
 
@@ -126,7 +130,7 @@ def uploading(coroutine):
     original coroutine, while awaiting it.
     """
     @wraps(coroutine)
-    async def wrapper(*args, picture=None,
+    async def wrapper(self, *args, picture=None,
                       description=None, tags=None, publish_date=None,
                       disable_comments=False, hide_stats=False,
                       unlisted=False, sections=None, **kwargs):
@@ -167,6 +171,6 @@ def uploading(coroutine):
         if sections is not None:
             params['sections'] = sections
 
-        return await coroutine(*args, params=params, **kwargs)
+        return await coroutine(self, *args, params=params, **kwargs)
 
     return wrapper

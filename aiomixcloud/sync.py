@@ -48,8 +48,8 @@ def _make_sync(cls, **options):
             if asyncio.iscoroutinefunction(attribute):
                 @wraps(attribute)
                 def sync_method(*args, **kwargs):
-                    """Wait for coroutine `attribute` to end and return
-                    its result.
+                    """Wait for coroutine `attribute` to complete and
+                    return its result.
                     """
                     loop = asyncio.get_event_loop()
                     return loop.run_until_complete(attribute(*args, **kwargs))
@@ -108,9 +108,6 @@ class MixcloudSync(_MixcloudSync):
         """Enable context management."""
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        """Blocking call to close :attr:`self._object._session
-        <aiomixcloud.core.Mixcloud._session>`.
-        """
-        loop = asyncio.get_event_loop()
-        return loop.run_until_complete(self._object._session.close())
+    def __exit__(self, *args):
+        """Clean up."""
+        self.close()

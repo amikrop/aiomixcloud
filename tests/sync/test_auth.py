@@ -5,72 +5,18 @@ import yarl
 from aiomixcloud import MixcloudOAuthError
 from aiomixcloud.sync import MixcloudOAuthSync
 
-from tests.auth_helpers import configure_mock_session, make_mock_mixcloud
+from tests.auth import TestMixcloudOAuthMixin, \
+                       configure_mock_session, make_mock_mixcloud
 from tests.verbose import VerboseTestCase
 
 
-class TestMixcloudOAuth(VerboseTestCase):
+class TestMixcloudOAuthSync(TestMixcloudOAuthMixin, VerboseTestCase):
     """Test `MixcloudOAuthSync`."""
 
-    def test_authorization_url_arguments(self):
-        """`MixcloudOAuthSync.authorization_url` must return the
-        correct result when `client_id` and `redirect_uri` are passed
-        as arguments during instantiation.
-        """
-        client_id = 'ks76vqq0'
-        redirect_uri = 'http://test.com/code/'
-        auth = MixcloudOAuthSync(client_id=client_id,
-                                 redirect_uri=redirect_uri)
-        self.assertEqual(
-            auth.authorization_url,
-            f'https://www.mixcloud.com/oauth/authorize?client_id={client_id}'
-            f'&redirect_uri={redirect_uri}')
-
-    def test_authorization_url_set_attributes(self):
-        """`MixcloudOAuthSync.authorization_url` must return the
-        correct result when `client_id` and `redirect_uri` are set
-        after instantiation.
-        """
-        client_id = 'js76bb2pi'
-        redirect_uri = 'https://foo.com/store'
-        auth = MixcloudOAuthSync()
-        auth.client_id = client_id
-        auth.redirect_uri = redirect_uri
-        self.assertEqual(
-            auth.authorization_url,
-            f'https://www.mixcloud.com/oauth/authorize?client_id={client_id}'
-            f'&redirect_uri={redirect_uri}')
-
-    def test_authorization_url_custom_root(self):
-        """`MixcloudOAuthSync.authorization_url` must return the
-        correct result when passing a custom `oauth_root` during
-        instantiation.
-        """
-        oauth_root = 'https://mixcloud.com/auth/'
-        client_id = 'ssku49n7'
-        redirect_uri = 'http://test.org/foo'
-        auth = MixcloudOAuthSync(oauth_root, client_id=client_id)
-        auth.redirect_uri = redirect_uri
-        self.assertEqual(
-            auth.authorization_url,
-            f'{oauth_root}authorize?client_id={client_id}'
-            f'&redirect_uri={redirect_uri}')
-
-    def test_authorization_url_invalid(self):
-        """`MixcloudOAuthSync.authorization_url` must raise
-        AssertionError when `client_id` or `redirect_uri` is not set.
-        """
-        values = [
-            {'client_id': 'di8ber5b'},
-            {'redirect_uri': 'https://example.net/store'},
-        ]
-        for params in values:
-            auth = MixcloudOAuthSync(**params)
-            with self.assertRaises(AssertionError):
-                auth.authorization_url
+    mixcloud_oauth_class = MixcloudOAuthSync
 
     def test_access_token(self):
-        """`MixcloudOAuth.access_token` must return an access token
+        """`MixcloudOAuthSync.access_token` must return an access token
         after having sent a valid OAuth code.
         """
         auth = MixcloudOAuthSync(client_id='gb7',
