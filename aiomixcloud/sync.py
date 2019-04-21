@@ -83,17 +83,17 @@ def _make_sync(cls, **options):
     return Sync
 
 
-#: Synchronous version of :class:`~aiomixcloud.auth.MixcloudOAuth`
+#: Synchronous version of :class:`~aiomixcloud.auth.MixcloudOAuth`.
 MixcloudOAuthSync = _make_sync(MixcloudOAuth)
 
-#: Synchronous version of :class:`~aiomixcloud.models.Resource`
+#: Synchronous version of :class:`~aiomixcloud.models.Resource`.
 ResourceSync = _make_sync(Resource)
 
-#: Synchronous version of :class:`~aiomixcloud.models.ResourceList`
+#: Synchronous version of :class:`~aiomixcloud.models.ResourceList`.
 ResourceListSync = _make_sync(ResourceList)
 
 #: Synchronous version of :class:`~aiomixcloud.core.Mixcloud`
-#: without synchronous context management capabilities
+#: without synchronous context management capabilities.
 _MixcloudSync = _make_sync(Mixcloud,
                            resource_class=ResourceSync,
                            resource_list_class=ResourceListSync)
