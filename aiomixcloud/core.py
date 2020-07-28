@@ -74,12 +74,12 @@ class Mixcloud:
                  json_decoder_class=json_decoder_class,
                  resource_class=resource_class,
                  resource_list_class=resource_list_class,
-                 raise_exceptions=False, session=None, loop=None):
+                 raise_exceptions=False, session=None):
         """Store instance attributes.  If no `session` is given,
         start a new one.
         """
         if session is None:
-            session = aiohttp.ClientSession(loop=loop)
+            session = aiohttp.ClientSession()
 
         #: Base URL for all API requests
         self._api_root = api_root
