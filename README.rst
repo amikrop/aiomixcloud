@@ -43,7 +43,7 @@ Installation
 
 The following Python versions are supported:
 
-- CPython: 3.6, 3.7, 3.8
+- CPython: 3.6, 3.7
 - PyPy: 3.5
 
 Install via `pip
