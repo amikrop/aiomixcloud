@@ -19,7 +19,7 @@ OEMBED_ROOT = 'https://www.mixcloud.com/oembed'
 OAUTH_ROOT = 'https://www.mixcloud.com/oauth'
 
 #: Uploaded mp3 maximum allowed size, in bytes
-MP3_MAX_SIZE = 524288000
+MP3_MAX_SIZE = 4294967296
 
 #: Uploaded picture maximum allowed size, in bytes
 PICTURE_MAX_SIZE = 10485760
