@@ -1,8 +1,8 @@
-from unittest.mock import MagicMock
+from unittest.mock import Mock
 
 
-class AsyncContextManagerMock(MagicMock):
-    """MagicMock supporting asynchronous context management."""
+class AsyncContextManagerMock(Mock):
+    """Mock supporting asynchronous context management."""
 
     async def __aenter__(self):
         """Return value that can be set while mocking."""
