@@ -195,7 +195,7 @@ Once the user allows access to your application they will be redirected to
 `https://example.com/store_code?code=OAUTH_CODE` and you can use the passed
 `code` GET parameter to get their access token::
 
-    access_token = oauth.access_token(code)
+    access_token = await oauth.access_token(code)
     async with Mixcloud(access_token=access_token) as mixcloud:
         # Authorized use of the API here
         pass
