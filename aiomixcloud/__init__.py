@@ -23,7 +23,7 @@ from aiomixcloud.core import Mixcloud
 from aiomixcloud.exceptions import MixcloudError, MixcloudOAuthError
 
 
-__version__ = '1.0.5'
+__version__ = '1.0.6'
 __author__ = 'Aristotelis Mikropoulos <amikrop@gmail.com>'
 __license__ = 'MIT'
 __url__ = 'https://github.com/amikrop/aiomixcloud'
