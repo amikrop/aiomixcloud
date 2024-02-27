@@ -1,1 +1,2 @@
+aiohttp
 sphinx-rtd-theme
