@@ -1,2 +1,3 @@
 aiohttp
+dateutil
 sphinx-rtd-theme
